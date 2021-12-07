@@ -1,5 +1,5 @@
 import java.awt.*;
-import java.awt.BorderLayout;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -19,16 +19,21 @@ class Authoring extends JFrame {
                 "authoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoring"));
         authoring.getContentPane().add(player, BorderLayout.NORTH);
 
+        VideoPlayer videoPlayer = new VideoPlayer();
+        videoPlayer.setBackground(Color.BLUE);
+        authoring.getContentPane().add(videoPlayer, BorderLayout.CENTER);
+
         JPanel frameSlider = new JPanel();
         JLabel frameLabel = new JLabel("0");
-        // frameLabel.setMinimumSize(new Dimension(500, 100));
+        // frameLabel.setMinimumSzie(new Dimension(500, 100));
         JSlider slider = new JSlider(1, 1000);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 // TODO Auto-generated method stub
                 JSlider source = (JSlider) e.getSource();
-                frameLabel.setText(String.valueOf(source.getValue()));
+                videoPlayer.currentFrame = source.getValue() - 1;
+                frameLabel.setText(String.valueOf(videoPlayer.currentFrame));
             }
         });
         slider.setMajorTickSpacing(150);
@@ -36,8 +41,8 @@ class Authoring extends JFrame {
         slider.setPaintLabels(true);
         slider.setPaintTicks(true);
         slider.setValue(0);
-        frameSlider.add(frameLabel);
-        frameSlider.add(slider);
+        frameSlider.add(frameLabel, BorderLayout.WEST);
+        frameSlider.add(slider, BorderLayout.CENTER);
         authoring.getContentPane().add(frameSlider, BorderLayout.SOUTH);
 
         authoring.pack();
