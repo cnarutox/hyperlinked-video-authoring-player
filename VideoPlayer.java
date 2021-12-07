@@ -3,10 +3,23 @@ import java.awt.image.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.util.*;
+
 import java.io.File; // Import the File class
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.DataLine.Info;
 
 import javax.swing.*;
 import javax.swing.JComponent;
@@ -16,10 +29,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import javax.swing.Timer;
+// import javax.swing.Timer;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import java.util.GregorianCalendar;
 
-public class VideoPlayer extends JPanel{
+import javax.sound.sampled.Clip;
+import java.net.MalformedURLException;
+// import javax.sound.sampled.LineUnavailableException;
+// import javax.sound.sampled.UnsupportedAudioFileException;
+
+public class VideoPlayer extends JPanel {
 
 	static int width = 352;
 	static int height = 288;
@@ -28,6 +50,42 @@ public class VideoPlayer extends JPanel{
 	static BufferedImage BI;
 	static String[] files;
 	static Boolean isPaused = true;
+
+	static boolean firstStart = true;
+	static long startTime;
+	static long currentTotalTime = 0;
+	static long lastStartTime;
+
+	Thread t;
+
+	class LRUCache extends LinkedHashMap<Integer, BufferedImage> {
+		private int capacity;
+
+		public LRUCache(int capacity) {
+			super(capacity, 0.75F, false);
+			this.capacity = capacity;
+		}
+
+		public BufferedImage get(int key) {
+			return super.getOrDefault(key, null);
+		}
+
+		public void put(int key, BufferedImage value) {
+			super.put(key, value);
+		}
+
+		@Override
+		protected boolean removeEldestEntry(Map.Entry<Integer, BufferedImage> eldest) {
+			return size() >= capacity;
+		}
+	}
+
+	LRUCache cache = new LRUCache(300);
+	int cacheIndex;
+
+	int soundindex;
+
+	// static PlaySound playSound;
 
 	BufferedImage bi;
 
@@ -38,13 +96,13 @@ public class VideoPlayer extends JPanel{
 
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(2*width, 2*height);
+		return new Dimension(2 * width, 2 * height);
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		System.out.println("paintComponent");
+		// System.out.println("paintComponent");
 
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(bi, 0, 0, this);
@@ -59,15 +117,89 @@ public class VideoPlayer extends JPanel{
 		}
 
 		public void actionPerformed(ActionEvent event) {
-			if (currentFrame < files.length && !isPaused) {
-				String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-				System.out.println(imgPath);
+			synchronized (cache) {
 
-				readImageRGB(width, height, imgPath, BI);
-				this.frame.bi = BI;
-				this.frame.repaint();
-				currentFrame += 1;
+				if (currentFrame < files.length && !isPaused) {
+					// Starts the music :P
+
+					// String imgPath = "DS/AIFilmOne/" + files[currentFrame];
+					// // System.out.println(imgPath);
+
+					// readImageRGB(width, height, imgPath, BI);
+
+					// System.out.println(currentFrame + " " + cache.keySet());
+					// System.out.println(t.isAlive());
+					// System.out.println(currentFrame + " " + cache.size());
+
+					System.out.println(System.currentTimeMillis());
+					this.frame.bi = cache.get(currentFrame);
+					this.frame.repaint();
+
+					currentFrame += 1;
+
+				}
 			}
+		}
+	}
+
+	public class PlayWaveException extends Exception {
+
+		public PlayWaveException(String message) {
+			super(message);
+		}
+
+		public PlayWaveException(Throwable cause) {
+			super(cause);
+		}
+
+		public PlayWaveException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+	}
+
+	public class Sound {
+		private Clip clip;
+
+		public Sound(String fileName) {
+			try {
+				File file = new File(fileName);
+				if (file.exists()) {
+					AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+					// load the sound into memory (a Clip)
+					clip = AudioSystem.getClip();
+					clip.open(sound);
+				} else {
+					throw new RuntimeException("Sound: file not found: " + fileName);
+				}
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Sound: Malformed URL: " + e);
+			} catch (UnsupportedAudioFileException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Sound: Unsupported Audio File: " + e);
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Sound: Input/Output Error: " + e);
+			} catch (LineUnavailableException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Sound: Line Unavailable Exception Error: " + e);
+			}
+
+			// play, stop, loop the sound clip
+		}
+
+		public void play() {
+			// clip.setFramePosition(0); // Must always rewind!
+			clip.start();
+		}
+
+		public void loop() {
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+		}
+
+		public void stop() {
+			clip.stop();
 		}
 	}
 
@@ -105,17 +237,18 @@ public class VideoPlayer extends JPanel{
 		}
 	}
 
-	public static void main(String[] args) {
+	public void playVideo() {
 
-		VideoPlayer VP = new VideoPlayer();
 		BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		String filename = "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne/AIFilmOne.wav";
 
+		Sound sound = new Sound(filename);
 		File folder = new File("DS/AIFilmOne");
 
 		files = new String[folder.listFiles().length];
 		int index = 0;
+
 		for (final File fileEntry : folder.listFiles()) {
-			// System.out.println(fileEntry.getName());
 			if (fileEntry.getName().endsWith(".rgb")) {
 				files[index] = fileEntry.getName();
 				index += 1;
@@ -123,7 +256,38 @@ public class VideoPlayer extends JPanel{
 		}
 		System.out.println(files.length);
 
-		// readImageRGB(width, height, "DS/AlFilmOneSub/AIFilmOne0011.rgb", BI);
+		cacheIndex = 0;
+
+		t = new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					synchronized (cache) {
+
+						// System.out.println(currentFrame + " " + cache.size());
+						if (cache.size() > 0 && currentFrame - 150 > cache.keySet().iterator().next()) {
+							// System.out.println("Remove " + cache.keySet().iterator().next());
+
+							cache.remove(cache.keySet().iterator().next());
+						}
+						if (currentFrame + 150 > cacheIndex) {
+							// System.out.println(cacheIndex);
+							String imgPath = "DS/AIFilmOne/" + files[cacheIndex];
+							BufferedImage cBI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+							readImageRGB(width, height, imgPath, cBI);
+
+							cache.put(cacheIndex, cBI);
+
+							cacheIndex += 1;
+						}
+
+						// if (cacheIndex >= files.length){
+						// break;
+						// }
+					}
+				}
+			}
+		});
+		t.start();
 
 		JFrame frame = new JFrame();
 		frame.setSize(width, height);
@@ -141,26 +305,52 @@ public class VideoPlayer extends JPanel{
 		frame.getContentPane().add(yourInputField);
 		frame.getContentPane().add(pp);
 
-		Runnable rn = new Runnable() {
+		// EventQueue.invokeLater(new Runnable() {
+		// public void run() {
+		// ActionListener listener = new TimePrinter(pp);
+		// Timer t = new Timer(1000 / 30, listener);
+		// t.start();
+		// }
+		// });
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				ActionListener listener = VP.new TimePrinter(pp);
-				Timer t = new Timer((int) 1000 / 30, listener);
-				t.start();
+				synchronized (cache) {
+					if (currentFrame < files.length && !isPaused) {
+						if ((currentTotalTime + System.currentTimeMillis() - lastStartTime) % 1000 < 10) {
+							System.out.println(currentTotalTime + System.currentTimeMillis() - lastStartTime);
+							currentFrame = (int) ((currentTotalTime + System.currentTimeMillis() - lastStartTime)
+									/ 1000) * 30;
+						}
+
+						pp.bi = cache.get(currentFrame);
+						pp.repaint();
+
+						currentFrame += 1;
+					}
+				}
 			}
-		};
-		EventQueue.invokeLater(rn);
+		}, 0, 1000 / 30);
+
 		bPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (!isPaused) {
+					currentTotalTime += System.currentTimeMillis() - lastStartTime;
+				}
 				isPaused = true;
+				sound.stop();
 			}
 		});
 		bSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (Integer.parseInt(yourInputField.getText()) < files.length) {
 					currentFrame = Integer.parseInt(yourInputField.getText());
-					String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-					System.out.println(imgPath);
+					currentTotalTime = currentFrame * (1000 / 30);
+					if (!isPaused) {
 
+						lastStartTime = currentTotalTime;
+					}
+					String imgPath = "DS/AIFilmOne/" + files[currentFrame];
 					readImageRGB(width, height, imgPath, BI);
 					pp.bi = BI;
 					pp.repaint();
@@ -170,7 +360,86 @@ public class VideoPlayer extends JPanel{
 		});
 		bResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (firstStart) {
+					startTime = System.currentTimeMillis();
+					firstStart = false;
+				}
+				if (isPaused) {
+					lastStartTime = System.currentTimeMillis();
+				}
 				isPaused = false;
+				sound.play();
+				// new Thread(new Runnable() {
+				// public void run() {
+				// String filename = "C:/Users/16129/OneDrive - University of Southern
+				// California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354
+				// PM/DS/AIFilmOne/AIFilmOne.wav";
+				// FileInputStream inputStream;
+				// try {
+				// inputStream = new FileInputStream(filename);
+				// } catch (FileNotFoundException e) {
+				// e.printStackTrace();
+				// return;
+				// }
+				// playSound = new PlaySound(inputStream);
+				// AudioInputStream audioInputStream = null;
+				// try {
+				// // InputStream bufferedIn = new BufferedInputStream(this.waveStream); // new
+				// audioInputStream = AudioSystem
+				// .getAudioInputStream(new BufferedInputStream(inputStream));
+				// } catch (UnsupportedAudioFileException e1) {
+				// e1.printStackTrace();
+				// } catch (IOException e1) {
+				// e1.printStackTrace();
+				// }
+
+				// // Obtain the information about the AudioInputStream
+				// AudioFormat audioFormat = audioInputStream.getFormat();
+				// Info info = new Info(SourceDataLine.class, audioFormat);
+
+				// // opens the audio channel
+				// SourceDataLine dataLine = null;
+				// try {
+				// dataLine = (SourceDataLine) AudioSystem.getLine(info);
+				// dataLine.open(audioFormat, 26460000);
+				// } catch (LineUnavailableException e1) {
+				// e1.printStackTrace();
+				// }
+
+				// // Starts the music :P
+
+				// int readBytes = 0;
+				// byte[] audioBuffer = new byte[2940];
+				// // byte[] audioBuffer = new byte[88200];
+				// soundindex = 0;
+
+				// try {
+				// // while (readBytes != -1 && soundindex < currentFrame) {
+				// // readBytes = audioInputStream.read(audioBuffer, 0, audioBuffer.length);
+				// // soundindex += 1;
+				// // }
+				// // System.out.println("start " + currentFrame + " " + soundindex);
+
+				// while (readBytes != -1) {
+
+				// readBytes = audioInputStream.read(audioBuffer, 0, audioBuffer.length);
+				// dataLine.start();
+				// if (readBytes >= 0) {
+				// dataLine.write(audioBuffer, 0, readBytes);
+				// soundindex += 1;
+				// }
+
+				// }
+				// } catch (IOException e1) {
+				// // throw new PlayWaveException(e1);
+				// e1.printStackTrace();
+				// } finally {
+				// // plays what's left and and closes the audioChannel
+				// dataLine.drain();
+				// dataLine.close();
+				// }
+				// }
+				// }).start();
 			}
 		});
 		frame.getContentPane().add(bPause);
@@ -178,5 +447,11 @@ public class VideoPlayer extends JPanel{
 		frame.getContentPane().add(bSelect);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+
+	public static void main(String[] args) {
+
+		VideoPlayer VP = new VideoPlayer();
+		VP.playVideo();
 	}
 }
