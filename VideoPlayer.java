@@ -1,45 +1,14 @@
 
-import java.awt.image.*;
 import java.awt.*;
 import java.awt.event.*;
-
-import java.util.*;
-
-import java.io.File; // Import the File class
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.BufferedInputStream;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.sound.sampled.DataLine.Info;
-
-import javax.swing.*;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-// import javax.swing.Timer;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import java.util.GregorianCalendar;
-
-import javax.sound.sampled.Clip;
+import java.awt.image.*;
+import java.io.*;
 import java.net.MalformedURLException;
-// import javax.sound.sampled.LineUnavailableException;
-// import javax.sound.sampled.UnsupportedAudioFileException;
+import java.util.*;
+import java.util.Timer;
+
+import javax.sound.sampled.*;
+import javax.swing.*;
 
 public class VideoPlayer extends JPanel {
 
@@ -55,6 +24,7 @@ public class VideoPlayer extends JPanel {
 	static long startTime;
 	static long currentTotalTime = 0;
 	static long lastStartTime;
+	JSlider slider;
 
 	Thread t;
 
@@ -136,7 +106,7 @@ public class VideoPlayer extends JPanel {
 					this.frame.repaint();
 
 					currentFrame += 1;
-
+					slider.setValue(currentFrame + 1);
 				}
 			}
 		}
@@ -240,10 +210,11 @@ public class VideoPlayer extends JPanel {
 	public void playVideo() {
 
 		BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		String filename = "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne/AIFilmOne.wav";
+		String filename = "C:\\Users\\cwx\\OneDrive - University of Southern California\\CSCI576\\Project\\AIFilmTwo\\AIFilmTwo.wav";
 
 		Sound sound = new Sound(filename);
-		File folder = new File("DS/AIFilmOne");
+		File folder = new File(
+				"C:\\Users\\cwx\\OneDrive - University of Southern California\\CSCI576\\Project\\AIFilmTwo");
 
 		files = new String[folder.listFiles().length];
 		int index = 0;
@@ -327,6 +298,7 @@ public class VideoPlayer extends JPanel {
 						pp.repaint();
 
 						currentFrame += 1;
+						slider.setValue(currentFrame + 1);
 					}
 				}
 			}
@@ -341,23 +313,23 @@ public class VideoPlayer extends JPanel {
 				sound.stop();
 			}
 		});
-		bSelect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (Integer.parseInt(yourInputField.getText()) < files.length) {
-					currentFrame = Integer.parseInt(yourInputField.getText());
-					currentTotalTime = currentFrame * (1000 / 30);
-					if (!isPaused) {
+		// bSelect.addActionListener(new ActionListener() {
+		// public void actionPerformed(ActionEvent e) {
+		// if (Integer.parseInt(yourInputField.getText()) < files.length) {
+		// currentFrame = Integer.parseInt(yourInputField.getText());
+		// currentTotalTime = currentFrame * (1000 / 30);
+		// if (!isPaused) {
 
-						lastStartTime = currentTotalTime;
-					}
-					String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-					readImageRGB(width, height, imgPath, BI);
-					pp.bi = BI;
-					pp.repaint();
-				}
+		// lastStartTime = currentTotalTime;
+		// }
+		// String imgPath = "DS/AIFilmOne/" + files[currentFrame];
+		// readImageRGB(width, height, imgPath, BI);
+		// pp.bi = BI;
+		// pp.repaint();
+		// }
 
-			}
-		});
+		// }
+		// });
 		bResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (firstStart) {

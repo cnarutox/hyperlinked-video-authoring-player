@@ -16,11 +16,12 @@ class Authoring extends JFrame {
 
         JPanel player = new JPanel();
         player.add(new JLabel(
-                "authoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoringauthoring"));
+                "Import Video"));
         authoring.getContentPane().add(player, BorderLayout.NORTH);
 
         VideoPlayer videoPlayer = new VideoPlayer();
         videoPlayer.setBackground(Color.BLUE);
+        videoPlayer.playVideo();
         authoring.getContentPane().add(videoPlayer, BorderLayout.CENTER);
 
         JPanel frameSlider = new JPanel();
@@ -41,6 +42,7 @@ class Authoring extends JFrame {
         slider.setPaintLabels(true);
         slider.setPaintTicks(true);
         slider.setValue(0);
+        videoPlayer.slider = slider;
         frameSlider.add(frameLabel, BorderLayout.WEST);
         frameSlider.add(slider, BorderLayout.CENTER);
         authoring.getContentPane().add(frameSlider, BorderLayout.SOUTH);
