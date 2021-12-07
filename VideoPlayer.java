@@ -28,6 +28,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.plaf.ColorUIResource;
 
 // import javax.swing.Timer;
 
@@ -189,8 +190,9 @@ public class VideoPlayer extends JPanel {
 			// play, stop, loop the sound clip
 		}
 
-		public void play() {
+		public void play(long microseconds) {
 			// clip.setFramePosition(0); // Must always rewind!
+			clip.setMicrosecondPosition(microseconds*1000);
 			clip.start();
 		}
 
@@ -336,6 +338,7 @@ public class VideoPlayer extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (!isPaused) {
 					currentTotalTime += System.currentTimeMillis() - lastStartTime;
+					System.out.println("pause " + currentTotalTime);
 				}
 				isPaused = true;
 				sound.stop();
@@ -347,8 +350,8 @@ public class VideoPlayer extends JPanel {
 					currentFrame = Integer.parseInt(yourInputField.getText());
 					currentTotalTime = currentFrame * (1000 / 30);
 					if (!isPaused) {
-
 						lastStartTime = currentTotalTime;
+						sound.play(currentTotalTime);
 					}
 					String imgPath = "DS/AIFilmOne/" + files[currentFrame];
 					readImageRGB(width, height, imgPath, BI);
@@ -368,7 +371,7 @@ public class VideoPlayer extends JPanel {
 					lastStartTime = System.currentTimeMillis();
 				}
 				isPaused = false;
-				sound.play();
+				sound.play(currentTotalTime);
 				// new Thread(new Runnable() {
 				// public void run() {
 				// String filename = "C:/Users/16129/OneDrive - University of Southern
