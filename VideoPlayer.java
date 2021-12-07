@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -159,8 +158,9 @@ public class VideoPlayer extends JPanel {
 			// play, stop, loop the sound clip
 		}
 
-		public void play() {
+		public void play(long microseconds) {
 			// clip.setFramePosition(0); // Must always rewind!
+			clip.setMicrosecondPosition(microseconds * 1000);
 			clip.start();
 		}
 
@@ -308,6 +308,7 @@ public class VideoPlayer extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (!isPaused) {
 					currentTotalTime += System.currentTimeMillis() - lastStartTime;
+					System.out.println("pause " + currentTotalTime);
 				}
 				isPaused = true;
 				sound.stop();
@@ -340,7 +341,7 @@ public class VideoPlayer extends JPanel {
 					lastStartTime = System.currentTimeMillis();
 				}
 				isPaused = false;
-				sound.play();
+				sound.play(currentTotalTime);
 				// new Thread(new Runnable() {
 				// public void run() {
 				// String filename = "C:/Users/16129/OneDrive - University of Southern
