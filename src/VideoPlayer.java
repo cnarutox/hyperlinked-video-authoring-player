@@ -294,8 +294,8 @@ public class VideoPlayer extends JPanel {
 					if (currentFrame < filelength && !isPaused) {
 						long currentTime = System.currentTimeMillis();
 						if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
-							System.out.println(currentTotalTime + currentTime -
-							lastStartTime);
+							// System.out.println(currentTotalTime + currentTime -
+							// lastStartTime);
 							currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime)
 									/ 1000) * 30;
 						}
@@ -332,7 +332,7 @@ public class VideoPlayer extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				synchronized (cache) {
 
-					if (Integer.valueOf(yourInputField.getText()) < filelength
+					if (yourInputField.getText().length() > 0 && Integer.valueOf(yourInputField.getText()) < filelength
 							&& Integer.valueOf(yourInputField.getText()) >= 0) {
 						currentFrame = Integer.valueOf(yourInputField.getText());
 						cacheIndex = currentFrame;
