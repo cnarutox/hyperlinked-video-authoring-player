@@ -1,19 +1,21 @@
+
 import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
+
 import java.awt.event.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-class Authoring extends JFrame {
+public class Authoring extends JFrame {
 
     public Authoring(String s) {
         super(s);
     }
 
-    static class ImportVideo extends JPanel {
+    public static class ImportVideo extends JPanel {
         JLabel label = new JLabel("Imported Video Path");
         JTextField videoNameField = new JTextField(25);
         JButton viewBtn = new JButton("View");
@@ -30,16 +32,16 @@ class Authoring extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser fc = new JFileChooser(
-                            "C:/Users/cwx/OneDrive - University of Southern California/CSCI576/Project");
+                            "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne");
                     fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int val = fc.showOpenDialog(null); // 文件打开对话框
+                    int val = fc.showOpenDialog(null); 
                     if (val == JFileChooser.APPROVE_OPTION) {
                         videoFile = fc.getSelectedFile();
                         System.out.println(videoFile);
                         videoNameField.setText(videoFile.getAbsolutePath());
                         linkedPlayer.importVideo(that);
                     } else {
-                        // videoName.setText("未选择文件");
+                        // videoName.setText("file not selected");
                     }
                 }
             });

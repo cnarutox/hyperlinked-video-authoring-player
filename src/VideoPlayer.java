@@ -1,3 +1,5 @@
+
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -234,6 +236,7 @@ public class VideoPlayer extends JPanel {
 	}
 
 	public void importVideo(Authoring.ImportVideo importPanel) {
+		
 		File videoPath = importPanel.videoFile;
 		Sound audio = new Sound(
 				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
@@ -325,12 +328,13 @@ public class VideoPlayer extends JPanel {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				isPaused = beforeDragStatus;
-				if (!isPaused) {
+				cacheIndex = currentFrame;
+				if (!beforeDragStatus) {
 					currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
 					audio.play(currentTotalTime);
 					lastStartTime = System.currentTimeMillis();
 				}
+				isPaused = beforeDragStatus;
 				System.out.println("release " + isPaused);
 			}
 		});
@@ -344,21 +348,13 @@ public class VideoPlayer extends JPanel {
 			isPaused = true;
 			audio.stop();
 			currentFrame = source.getValue() - 1;
-			cacheIndex = currentFrame;
-			// currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
-
-			// synchronized (cache) {F
-			// if (!isPaused) {
-			// lastStartTime = System.currentTimeMillis();
-			// // audio.play(currentTotalTime);
-			// } else
+			
 			if (cache.containsKey(currentFrame)) {
 				that.frameImg = cache.get(currentFrame);
 			} else {
 				String imgPath = videoPath.getAbsolutePath() + "/" + files[currentFrame];
 				that.frameImg = readImageRGB(width, height, imgPath, BI);
 			}
-			// }
 			that.repaint();
 		});
 		btnPlay.addActionListener(new ActionListener() {
