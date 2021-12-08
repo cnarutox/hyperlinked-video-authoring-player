@@ -8,6 +8,8 @@ import java.util.Timer;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.MouseInputListener;
 
 public class VideoPlayer extends JPanel {
 
@@ -25,8 +27,22 @@ public class VideoPlayer extends JPanel {
 	static long lastStartTime;
 	static int filelength = 9000;
 	JSlider slider;
+	int cacheIndex;
+	int soundindex;
 
+	// static PlaySound playSound;
+
+	BufferedImage frameImg;
 	Thread t;
+
+	VideoPlayer that = this;
+
+	public VideoPlayer() {
+	}
+
+	public VideoPlayer(Authoring.ImportVideo importPanel) {
+		importPanel.linkedPlayer = this;
+	}
 
 	class LRUCache extends LinkedHashMap<Integer, BufferedImage> {
 		private int capacity;
@@ -51,13 +67,6 @@ public class VideoPlayer extends JPanel {
 	}
 
 	LRUCache cache = new LRUCache(300);
-	int cacheIndex;
-
-	int soundindex;
-
-	// static PlaySound playSound;
-
-	BufferedImage bi;
 
 	@Override
 	public void paint(Graphics g) {
@@ -75,7 +84,7 @@ public class VideoPlayer extends JPanel {
 		// System.out.println("paintComponent");
 
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(bi, 0, 0, this);
+		g2.drawImage(frameImg, 0, 0, this);
 		// g2.drawImage(bi, null, 0, 0);
 	}
 
@@ -174,7 +183,7 @@ public class VideoPlayer extends JPanel {
 		}
 	}
 
-	private static void readImageRGB(int width, int height, String imgPath, BufferedImage img) {
+	private static BufferedImage readImageRGB(int width, int height, String imgPath, BufferedImage img) {
 		try {
 			int frameLength = width * height * 3;
 
@@ -206,87 +215,74 @@ public class VideoPlayer extends JPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return img;
 	}
 
-	public void playVideo() {
+	boolean beforeDragStatus = false;
+	JButton btnPause = new JButton("Pause");
+	JButton btnPlay = new JButton("Play");
+	JTextField yourInputField = new JTextField(16);
+	JButton bSelect = new JButton("Select");
+	JLabel frameLabel;
 
-		BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		String filename = "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne/AIFilmOne.wav";
+	public void link(Authoring.ImportVideo importVideo, JSlider jSlider, JButton play, JButton pause, JLabel label) {
+		importVideo.linkedPlayer = this;
+		slider = jSlider;
+		btnPlay = play;
+		btnPause = pause;
+		frameLabel = label;
+	}
 
-		Sound sound = new Sound(filename);
-		File folder = new File(
-				"C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne");
+	public void importVideo(Authoring.ImportVideo importPanel) {
+		File videoPath = importPanel.videoFile;
+		Sound audio = new Sound(
+				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
+		cacheIndex = 0;
 
-		files = new String[filelength];
 		int index = 0;
-
-		for (final File fileEntry : folder.listFiles()) {
+		files = new String[videoPath.listFiles().length];
+		for (final File fileEntry : videoPath.listFiles()) {
 			if (fileEntry.getName().endsWith(".rgb")) {
 				files[index] = fileEntry.getName();
 				index += 1;
 			}
 		}
+		filelength = index;
+		slider.setMaximum(filelength);
+		System.out.println("Loaded " + videoPath);
 
-		cacheIndex = 0;
-
+		BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
+					// System.out.println(currentFrame + " " + cache.size());
+					if (cacheIndex >= filelength) {
+						continue;
+					}
 					synchronized (cache) {
+						if (cache.size() > 0 && currentFrame - 150 > cache.keySet().iterator().next()) {
+							cache.remove(cache.keySet().iterator().next());
+						}
+					}
+					if (currentFrame + 150 > cacheIndex) {
+						synchronized (cache) {
+							if (!cache.containsKey(cacheIndex)) {
 
-						// System.out.println(currentFrame + " " + cache.size());
-						if (cacheIndex <  filelength){
-							if (cache.size() > 0 && currentFrame - 150 > cache.keySet().iterator().next()) {
-								// System.out.println("Remove " + cache.keySet().iterator().next());
-	
-								cache.remove(cache.keySet().iterator().next());
-							}
-							if (currentFrame + 150 > cacheIndex) {
-								// System.out.println(currentFrame + " " + cacheIndex);
-								if (!cache.containsKey(cacheIndex)) {
-	
-									String imgPath = "DS/AIFilmOne/" + files[cacheIndex];
-									// BufferedImage cBI = new BufferedImage(width, height,
-									// BufferedImage.TYPE_INT_RGB);
-									BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-									readImageRGB(width, height, imgPath, BI);
-	
-									cache.put(cacheIndex, BI);
-								}
-	
-								cacheIndex += 1;
+								String imgPath = videoPath.getAbsolutePath() + "/" + files[cacheIndex];
+								BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+								readImageRGB(width, height, imgPath, BI);
+								cache.put(cacheIndex, BI);
 							}
 						}
-						
+						cacheIndex += 1;
 					}
 				}
 			}
 		});
 		t.start();
 
-		JFrame frame = new JFrame();
-		frame.setSize(2 * width, 2 * height);
-		frame.getContentPane().setLayout(
-				new BoxLayout(frame.getContentPane(), BoxLayout.PAGE_AXIS));
-
 		// frame.setLayout(new BoxLayout(frame, BoxLayout.PAGE_AXIS));
 
-		VideoPlayer pp = new VideoPlayer();
-		JButton bPause = new JButton("Pause");
-		JButton bResume = new JButton("Resume");
-		JTextField yourInputField = new JTextField(16);
-		JButton bSelect = new JButton("Select");
-
-		frame.getContentPane().add(yourInputField);
-		frame.getContentPane().add(pp);
-
-		// EventQueue.invokeLater(new Runnable() {
-		// public void run() {
-		// ActionListener listener = new TimePrinter(pp);
-		// Timer t = new Timer(1000 / 30, listener);
-		// t.start();
-		// }
-		// });
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
@@ -294,166 +290,90 @@ public class VideoPlayer extends JPanel {
 					if (currentFrame < filelength && !isPaused) {
 						long currentTime = System.currentTimeMillis();
 						if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
-							// System.out.println(currentTotalTime + currentTime -
-							// lastStartTime);
 							currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime)
 									/ 1000) * 30;
 						}
-
-						// System.out.println(currentFrame + " " + cache.keySet());
 						if (cache.containsKey(currentFrame)) {
-							pp.bi = cache.get(currentFrame);
+							that.frameImg = cache.get(currentFrame);
 						} else {
-							String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-							readImageRGB(width, height, imgPath, BI);
-							pp.bi = BI;
+							that.frameImg = readImageRGB(width, height,
+									videoPath.getAbsolutePath() + "/" + files[currentFrame], BI);
 						}
-						pp.repaint();
-
+						that.repaint();
 						currentFrame += 1;
-						// slider.setValue(currentFrame + 1);
+						slider.setValue(currentFrame + 1);
 					}
 				}
 			}
 		}, 0, 1000 / 30);
 
-		bPause.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnPause.addActionListener(e -> {
+			if (!isPaused) {
+				currentTotalTime += System.currentTimeMillis() - lastStartTime;
+			}
+			isPaused = true;
+			audio.stop();
+		});
+		slider.addMouseListener(new MouseInputAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				beforeDragStatus = isPaused;
+				System.out.println("pressed " + isPaused);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				isPaused = beforeDragStatus;
 				if (!isPaused) {
-					// currentTotalTime += (int)((System.currentTimeMillis() - lastStartTime) / (1000/30)) * (1000/30);
-					currentTotalTime += System.currentTimeMillis() - lastStartTime;
-					// System.out.println("pause " + currentTotalTime);
+					currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
+					audio.play(currentTotalTime);
+					lastStartTime = System.currentTimeMillis();
 				}
-				isPaused = true;
-				sound.stop();
+				System.out.println("release " + isPaused);
 			}
 		});
-		bSelect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				synchronized (cache) {
-
-					if (yourInputField.getText().length() > 0 && Integer.valueOf(yourInputField.getText()) < filelength
-							&& Integer.valueOf(yourInputField.getText()) >= 0) {
-						currentFrame = Integer.valueOf(yourInputField.getText());
-						cacheIndex = currentFrame;
-						currentTotalTime = (long)(currentFrame * ((double)1000 / 30));
-						System.out.println("select " + currentTotalTime);
-						if (!isPaused) {
-							lastStartTime = System.currentTimeMillis();
-							sound.play(currentTotalTime);
-						} else if (isPaused) {
-							// BufferedImage BI = new BufferedImage(width, height,
-							// BufferedImage.TYPE_INT_RGB);
-							// String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-							// readImageRGB(width, height, imgPath, BI);
-							if (cache.containsKey(currentFrame)) {
-								pp.bi = cache.get(currentFrame);
-							} else {
-								String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-								readImageRGB(width, height, imgPath, BI);
-								pp.bi = BI;
-							}
-							pp.repaint();
-						}
-					}
-				}
-
+		slider.addChangeListener(e -> {
+			// TODO Auto-generated method stub
+			JSlider source = (JSlider) e.getSource();
+			frameLabel.setText(String.valueOf(currentFrame));
+			if (!source.getValueIsAdjusting()) {
+				return;
 			}
+			isPaused = true;
+			audio.stop();
+			currentFrame = source.getValue() - 1;
+			cacheIndex = currentFrame;
+			// currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
+
+			// synchronized (cache) {F
+			// if (!isPaused) {
+			// lastStartTime = System.currentTimeMillis();
+			// // audio.play(currentTotalTime);
+			// } else
+			if (cache.containsKey(currentFrame)) {
+				that.frameImg = cache.get(currentFrame);
+			} else {
+				String imgPath = videoPath.getAbsolutePath() + "/" + files[currentFrame];
+				that.frameImg = readImageRGB(width, height, imgPath, BI);
+			}
+			// }
+			that.repaint();
 		});
-		bResume.addActionListener(new ActionListener() {
+		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (firstStart) {
-					startTime = System.currentTimeMillis();
-					firstStart = false;
-				}
 				if (isPaused) {
 					lastStartTime = System.currentTimeMillis();
-					sound.play(currentTotalTime);
+					audio.play(currentTotalTime);
 				}
 				isPaused = false;
-				// new Thread(new Runnable() {
-				// public void run() {
-				// String filename = "C:/Users/16129/OneDrive - University of Southern
-				// California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354
-				// PM/DS/AIFilmOne/AIFilmOne.wav";
-				// FileInputStream inputStream;
-				// try {
-				// inputStream = new FileInputStream(filename);
-				// } catch (FileNotFoundException e) {
-				// e.printStackTrace();
-				// return;
-				// }
-				// playSound = new PlaySound(inputStream);
-				// AudioInputStream audioInputStream = null;
-				// try {
-				// // InputStream bufferedIn = new BufferedInputStream(this.waveStream); // new
-				// audioInputStream = AudioSystem
-				// .getAudioInputStream(new BufferedInputStream(inputStream));
-				// } catch (UnsupportedAudioFileException e1) {
-				// e1.printStackTrace();
-				// } catch (IOException e1) {
-				// e1.printStackTrace();
-				// }
-
-				// // Obtain the information about the AudioInputStream
-				// AudioFormat audioFormat = audioInputStream.getFormat();
-				// Info info = new Info(SourceDataLine.class, audioFormat);
-
-				// // opens the audio channel
-				// SourceDataLine dataLine = null;
-				// try {
-				// dataLine = (SourceDataLine) AudioSystem.getLine(info);
-				// dataLine.open(audioFormat, 26460000);
-				// } catch (LineUnavailableException e1) {
-				// e1.printStackTrace();
-				// }
-
-				// // Starts the music :P
-
-				// int readBytes = 0;
-				// byte[] audioBuffer = new byte[2940];
-				// // byte[] audioBuffer = new byte[88200];
-				// soundindex = 0;
-
-				// try {
-				// // while (readBytes != -1 && soundindex < currentFrame) {
-				// // readBytes = audioInputStream.read(audioBuffer, 0, audioBuffer.length);
-				// // soundindex += 1;
-				// // }
-				// // System.out.println("start " + currentFrame + " " + soundindex);
-
-				// while (readBytes != -1) {
-
-				// readBytes = audioInputStream.read(audioBuffer, 0, audioBuffer.length);
-				// dataLine.start();
-				// if (readBytes >= 0) {
-				// dataLine.write(audioBuffer, 0, readBytes);
-				// soundindex += 1;
-				// }
-
-				// }
-				// } catch (IOException e1) {
-				// // throw new PlayWaveException(e1);
-				// e1.printStackTrace();
-				// } finally {
-				// // plays what's left and and closes the audioChannel
-				// dataLine.drain();
-				// dataLine.close();
-				// }
-				// }
-				// }).start();
 			}
 		});
-		frame.getContentPane().add(bPause);
-		frame.getContentPane().add(bResume);
-		frame.getContentPane().add(bSelect);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 
 	public static void main(String[] args) {
 
 		VideoPlayer VP = new VideoPlayer();
-		VP.playVideo();
 	}
 }

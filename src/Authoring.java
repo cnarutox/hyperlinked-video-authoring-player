@@ -3,6 +3,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -16,12 +17,15 @@ class Authoring extends JFrame {
         JLabel label = new JLabel("Imported Video Path");
         JTextField videoNameField = new JTextField(25);
         JButton viewBtn = new JButton("View");
+        File videoFile;
+        VideoPlayer linkedPlayer;
 
         public ImportVideo() {
             super();
             this.add(label);
             this.add(videoNameField);
             this.add(viewBtn);
+            ImportVideo that = this;
             viewBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -30,7 +34,10 @@ class Authoring extends JFrame {
                     fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     int val = fc.showOpenDialog(null); // 文件打开对话框
                     if (val == JFileChooser.APPROVE_OPTION) {
-                        videoNameField.setText(fc.getSelectedFile().toString());
+                        videoFile = fc.getSelectedFile();
+                        System.out.println(videoFile);
+                        videoNameField.setText(videoFile.getAbsolutePath());
+                        linkedPlayer.importVideo(that);
                     } else {
                         // videoName.setText("未选择文件");
                     }
@@ -48,32 +55,29 @@ class Authoring extends JFrame {
         authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
 
         VideoPlayer videoPlayer = new VideoPlayer();
-        videoPlayer.setBackground(Color.BLUE);
         authoring.getContentPane().add(videoPlayer, BorderLayout.CENTER);
 
-        JPanel frameSlider = new JPanel();
-        JLabel frameLabel = new JLabel("0");
-        // frameLabel.setMinimumSzie(new Dimension(500, 100));
-        JSlider slider = new JSlider(1, 1000);
-        slider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                // TODO Auto-generated method stub
-                JSlider source = (JSlider) e.getSource();
-                videoPlayer.currentFrame = source.getValue() - 1;
-                frameLabel.setText(String.valueOf(videoPlayer.currentFrame));
-            }
-        });
-        slider.setMajorTickSpacing(150);
-        slider.setMinorTickSpacing(30);
+        JLabel frameLabel = new JLabel("0", JLabel.CENTER);
+        JSlider slider = new JSlider(1, 9000);
+        slider.setMajorTickSpacing(900);
+        // slider.setMinorTickSpacing(30);
         slider.setPaintLabels(true);
         slider.setPaintTicks(true);
         slider.setValue(0);
-        videoPlayer.slider = slider;
-        frameSlider.add(frameLabel, BorderLayout.WEST);
-        frameSlider.add(slider, BorderLayout.CENTER);
-        authoring.getContentPane().add(frameSlider, BorderLayout.SOUTH);
 
+        JPanel btnPanel = new JPanel();
+        JButton pauseBtn = new JButton("Pause");
+        JButton playBtn = new JButton("Play");
+        btnPanel.add(pauseBtn);
+        btnPanel.add(playBtn);
+        videoPlayer.link(importPanel, slider, playBtn, pauseBtn, frameLabel);
+
+        JPanel frameSlider = new JPanel(new BorderLayout(10, 5));
+        frameSlider.add(btnPanel, BorderLayout.NORTH);
+        frameSlider.add(frameLabel, BorderLayout.CENTER);
+        frameSlider.add(slider, BorderLayout.SOUTH);
+
+        authoring.getContentPane().add(frameSlider, BorderLayout.SOUTH);
         authoring.pack();
         authoring.setVisible(true);
         authoring.setPreferredSize(new Dimension(720, 480));
