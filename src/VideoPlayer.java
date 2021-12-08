@@ -23,6 +23,7 @@ public class VideoPlayer extends JPanel {
 	static long startTime;
 	static long currentTotalTime = 0;
 	static long lastStartTime;
+	static int filelength = 9000;
 	JSlider slider;
 
 	Thread t;
@@ -78,38 +79,38 @@ public class VideoPlayer extends JPanel {
 		// g2.drawImage(bi, null, 0, 0);
 	}
 
-	class TimePrinter implements ActionListener {
-		private VideoPlayer frame;
+	// class TimePrinter implements ActionListener {
+	// private VideoPlayer frame;
 
-		TimePrinter(VideoPlayer frame) {
-			this.frame = frame;
-		}
+	// TimePrinter(VideoPlayer frame) {
+	// this.frame = frame;
+	// }
 
-		public void actionPerformed(ActionEvent event) {
-			synchronized (cache) {
+	// public void actionPerformed(ActionEvent event) {
+	// synchronized (cache) {
 
-				if (currentFrame < files.length && !isPaused) {
-					// Starts the music :P
+	// if (currentFrame < filelength && !isPaused) {
+	// // Starts the music :P
 
-					// String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-					// // System.out.println(imgPath);
+	// // String imgPath = "DS/AIFilmOne/" + files[currentFrame];
+	// // // System.out.println(imgPath);
 
-					// readImageRGB(width, height, imgPath, BI);
+	// // readImageRGB(width, height, imgPath, BI);
 
-					// System.out.println(currentFrame + " " + cache.keySet());
-					// System.out.println(t.isAlive());
-					// System.out.println(currentFrame + " " + cache.size());
+	// // System.out.println(currentFrame + " " + cache.keySet());
+	// // System.out.println(t.isAlive());
+	// System.out.println(currentFrame + " " + cache.size());
 
-					System.out.println(System.currentTimeMillis());
-					this.frame.bi = cache.get(currentFrame);
-					this.frame.repaint();
+	// System.out.println(System.currentTimeMillis());
+	// this.frame.bi = cache.get(currentFrame);
+	// this.frame.repaint();
 
-					currentFrame += 1;
-					slider.setValue(currentFrame + 1);
-				}
-			}
-		}
-	}
+	// currentFrame += 1;
+	// slider.setValue(currentFrame + 1);
+	// }
+	// }
+	// }
+	// }
 
 	public class PlayWaveException extends Exception {
 
@@ -210,13 +211,13 @@ public class VideoPlayer extends JPanel {
 	public void playVideo() {
 
 		BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		String filename = "C:\\Users\\cwx\\OneDrive - University of Southern California\\CSCI576\\Project\\AIFilmTwo\\AIFilmTwo.wav";
+		String filename = "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne/AIFilmOne.wav";
 
 		Sound sound = new Sound(filename);
 		File folder = new File(
-				"C:\\Users\\cwx\\OneDrive - University of Southern California\\CSCI576\\Project\\AIFilmTwo");
+				"C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne");
 
-		files = new String[folder.listFiles().length];
+		files = new String[filelength];
 		int index = 0;
 
 		for (final File fileEntry : folder.listFiles()) {
@@ -225,7 +226,6 @@ public class VideoPlayer extends JPanel {
 				index += 1;
 			}
 		}
-		System.out.println(files.length);
 
 		cacheIndex = 0;
 
@@ -235,25 +235,29 @@ public class VideoPlayer extends JPanel {
 					synchronized (cache) {
 
 						// System.out.println(currentFrame + " " + cache.size());
-						if (cache.size() > 0 && currentFrame - 150 > cache.keySet().iterator().next()) {
-							// System.out.println("Remove " + cache.keySet().iterator().next());
-
-							cache.remove(cache.keySet().iterator().next());
+						if (cacheIndex <  filelength){
+							if (cache.size() > 0 && currentFrame - 150 > cache.keySet().iterator().next()) {
+								// System.out.println("Remove " + cache.keySet().iterator().next());
+	
+								cache.remove(cache.keySet().iterator().next());
+							}
+							if (currentFrame + 150 > cacheIndex) {
+								// System.out.println(currentFrame + " " + cacheIndex);
+								if (!cache.containsKey(cacheIndex)) {
+	
+									String imgPath = "DS/AIFilmOne/" + files[cacheIndex];
+									// BufferedImage cBI = new BufferedImage(width, height,
+									// BufferedImage.TYPE_INT_RGB);
+									BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+									readImageRGB(width, height, imgPath, BI);
+	
+									cache.put(cacheIndex, BI);
+								}
+	
+								cacheIndex += 1;
+							}
 						}
-						if (currentFrame + 150 > cacheIndex) {
-							// System.out.println(cacheIndex);
-							String imgPath = "DS/AIFilmOne/" + files[cacheIndex];
-							BufferedImage cBI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-							readImageRGB(width, height, imgPath, cBI);
-
-							cache.put(cacheIndex, cBI);
-
-							cacheIndex += 1;
-						}
-
-						// if (cacheIndex >= files.length){
-						// break;
-						// }
+						
 					}
 				}
 			}
@@ -261,7 +265,7 @@ public class VideoPlayer extends JPanel {
 		t.start();
 
 		JFrame frame = new JFrame();
-		frame.setSize(width, height);
+		frame.setSize(2 * width, 2 * height);
 		frame.getContentPane().setLayout(
 				new BoxLayout(frame.getContentPane(), BoxLayout.PAGE_AXIS));
 
@@ -287,18 +291,27 @@ public class VideoPlayer extends JPanel {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				synchronized (cache) {
-					if (currentFrame < files.length && !isPaused) {
-						if ((currentTotalTime + System.currentTimeMillis() - lastStartTime) % 1000 < 10) {
-							System.out.println(currentTotalTime + System.currentTimeMillis() - lastStartTime);
-							currentFrame = (int) ((currentTotalTime + System.currentTimeMillis() - lastStartTime)
+					if (currentFrame < filelength && !isPaused) {
+						long currentTime = System.currentTimeMillis();
+						if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
+							System.out.println(currentTotalTime + currentTime -
+							lastStartTime);
+							currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime)
 									/ 1000) * 30;
 						}
 
-						pp.bi = cache.get(currentFrame);
+						// System.out.println(currentFrame + " " + cache.keySet());
+						if (cache.containsKey(currentFrame)) {
+							pp.bi = cache.get(currentFrame);
+						} else {
+							String imgPath = "DS/AIFilmOne/" + files[currentFrame];
+							readImageRGB(width, height, imgPath, BI);
+							pp.bi = BI;
+						}
 						pp.repaint();
 
 						currentFrame += 1;
-						slider.setValue(currentFrame + 1);
+						// slider.setValue(currentFrame + 1);
 					}
 				}
 			}
@@ -307,30 +320,46 @@ public class VideoPlayer extends JPanel {
 		bPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isPaused) {
+					// currentTotalTime += (int)((System.currentTimeMillis() - lastStartTime) / (1000/30)) * (1000/30);
 					currentTotalTime += System.currentTimeMillis() - lastStartTime;
-					System.out.println("pause " + currentTotalTime);
+					// System.out.println("pause " + currentTotalTime);
 				}
 				isPaused = true;
 				sound.stop();
 			}
 		});
-		// bSelect.addActionListener(new ActionListener() {
-		// public void actionPerformed(ActionEvent e) {
-		// if (Integer.parseInt(yourInputField.getText()) < files.length) {
-		// currentFrame = Integer.parseInt(yourInputField.getText());
-		// currentTotalTime = currentFrame * (1000 / 30);
-		// if (!isPaused) {
+		bSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				synchronized (cache) {
 
-		// lastStartTime = currentTotalTime;
-		// }
-		// String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-		// readImageRGB(width, height, imgPath, BI);
-		// pp.bi = BI;
-		// pp.repaint();
-		// }
+					if (Integer.valueOf(yourInputField.getText()) < filelength
+							&& Integer.valueOf(yourInputField.getText()) >= 0) {
+						currentFrame = Integer.valueOf(yourInputField.getText());
+						cacheIndex = currentFrame;
+						currentTotalTime = (long)(currentFrame * ((double)1000 / 30));
+						System.out.println("select " + currentTotalTime);
+						if (!isPaused) {
+							lastStartTime = System.currentTimeMillis();
+							sound.play(currentTotalTime);
+						} else if (isPaused) {
+							// BufferedImage BI = new BufferedImage(width, height,
+							// BufferedImage.TYPE_INT_RGB);
+							// String imgPath = "DS/AIFilmOne/" + files[currentFrame];
+							// readImageRGB(width, height, imgPath, BI);
+							if (cache.containsKey(currentFrame)) {
+								pp.bi = cache.get(currentFrame);
+							} else {
+								String imgPath = "DS/AIFilmOne/" + files[currentFrame];
+								readImageRGB(width, height, imgPath, BI);
+								pp.bi = BI;
+							}
+							pp.repaint();
+						}
+					}
+				}
 
-		// }
-		// });
+			}
+		});
 		bResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (firstStart) {
@@ -339,9 +368,9 @@ public class VideoPlayer extends JPanel {
 				}
 				if (isPaused) {
 					lastStartTime = System.currentTimeMillis();
+					sound.play(currentTotalTime);
 				}
 				isPaused = false;
-				sound.play(currentTotalTime);
 				// new Thread(new Runnable() {
 				// public void run() {
 				// String filename = "C:/Users/16129/OneDrive - University of Southern
