@@ -50,9 +50,9 @@ public class Links {
 
     // get all region(with bound and linkedframe) within frame
     public List<Region> inRegion(String fromFile, int frame) {
-        fromFile.replace("\\", "\\/");
-        System.out.println("inRegion " + fromFile + " " + frame);
-        System.out.println(this.linkedMap.keySet());
+        // fromFile.replace("\\", "\\/");
+        // System.out.println("inRegion " + fromFile + " " + frame);
+        // System.out.println(this.linkedMap.keySet());
         ArrayList<Region> regions = new ArrayList<Region>();
         if (!linkedMap.containsKey(fromFile)) {
             return regions;

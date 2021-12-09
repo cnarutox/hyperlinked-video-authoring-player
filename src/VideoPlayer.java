@@ -45,7 +45,9 @@ public class VideoPlayer extends JPanel {
 
 	public VideoPlayer() {
 		links = new Links();
-		// String videoSourcePath = "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/";
+		// String videoSourcePath = "C:/Users/16129/OneDrive - University of Southern
+		// California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354
+		// PM/";
 
 		// Region region1 = new Region(10, 10, 20, 20, 10);
 		// region1.setEnd(100, 100, 200, 200, 1000);
@@ -62,14 +64,16 @@ public class VideoPlayer extends JPanel {
 		// System.out.println(String.format("read from %s",
 		// String.format("%sAIFilmOne/%s.txt", videoSourcePath, "AIFilmOne")));
 
-		// links.readLocalFile(String.format("%sAIFilmOne/%s.txt", videoSourcePath, "AIFilmOne"));
+		// links.readLocalFile(String.format("%sAIFilmOne/%s.txt", videoSourcePath,
+		// "AIFilmOne"));
 		// for (String key : links.getKeySet()) {
-		// 	for (Region region : links.getItems(key)) {
-		// 		System.out.println(region);
-		// 	}
+		// for (Region region : links.getItems(key)) {
+		// System.out.println(region);
+		// }
 		// }
 
-		linkDisplay = new LinkDisplay();
+		linkDisplay = new LinkDisplay(this);
+		linkCreate = new LinkCreate(this);
 
 		t = new Thread(new Runnable() {
 			public void run() {
@@ -112,7 +116,7 @@ public class VideoPlayer extends JPanel {
 					if (cache.containsKey(currentFrame)) {
 						that.frameImg = cache.get(currentFrame);
 						that.repaint();
-						
+
 						currentFrame += 1;
 						slider.setValue(currentFrame + 1);
 						return;
@@ -147,12 +151,16 @@ public class VideoPlayer extends JPanel {
 		if (Authoring.isCreating && linkCreate.isDrawing)
 			linkCreate.draw(g2);
 		// System.out.println(links);
-		
-		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
-				videoPath.getAbsolutePath(), currentFrame);
-		for (Region region : regions) {
-			linkDisplay.draw(region, g2);
-		}
+		linkDisplay.drawROI(g2);
+		// ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
+		// videoPath.getAbsolutePath(), currentFrame);
+		// for (Region region : regions) {
+		// if (linkDisplay.draw(region, g2)){
+		// isPaused = true;
+		// audio.stop();
+		// importVideo(new File(region.getLinkedFile()), region.getLinkedFrame());
+		// }
+		// }
 	}
 
 	boolean beforeDragStatus = false;
@@ -226,20 +234,23 @@ public class VideoPlayer extends JPanel {
 		});
 	}
 
-	public void importVideo(File videoPath) {
+	public void importVideo(File videoPath, int startFrame) {
+		if (audio != null)
+			audio.stop();
+
 		this.videoPath = videoPath;
 		System.out.println("importVideo " + videoPath);
 		links.fromFile = videoPath.getAbsolutePath();
 		isPaused = true;
 		beforeDragStatus = true;
-		currentFrame = 0;
-		cacheIndex = 0;
-		lastStartTime = 0;
-		currentTotalTime = 0;
 		cache.clear();
-		slider.setValue(1);
-		if (audio != null)
-			audio.stop();
+		lastStartTime = 0;
+
+		currentFrame = startFrame;
+		cacheIndex = currentFrame;
+		currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
+		;
+		slider.setValue(startFrame + 1);
 
 		audio = new Sound(
 				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
@@ -254,9 +265,10 @@ public class VideoPlayer extends JPanel {
 		}
 		filelength = index;
 		slider.setMaximum(filelength);
+
 		if (frameImg == null)
 			frameImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
-		frameImg = readImageRGB(width, height, videoPath.getAbsolutePath() + "/" + files[0], frameImg);
+		frameImg = readImageRGB(width, height, videoPath.getAbsolutePath() + "/" + files[currentFrame], frameImg);
 		repaint();
 	}
 
@@ -293,7 +305,7 @@ public class VideoPlayer extends JPanel {
 		JPanel mainVideo = authoring.createVideoArea();
 		authoring.add(mainVideo);
 
-		VideoPlayer mainVideoPlayer = (VideoPlayer)mainVideo.getComponent(0);
+		VideoPlayer mainVideoPlayer = (VideoPlayer) mainVideo.getComponent(0);
 
 		JPanel importVideoPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));
 		JTextField mainVideoName = new JTextField(10);
@@ -310,15 +322,17 @@ public class VideoPlayer extends JPanel {
 				if (val == JFileChooser.APPROVE_OPTION) {
 					File videoFile = fc.getSelectedFile();
 					mainVideoName.setText(videoFile.getName());
-					mainVideoPlayer.importVideo(videoFile);
-					System.out.println("readLocalFile: " + String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
-					mainVideoPlayer.links.readLocalFile(String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
+					mainVideoPlayer.importVideo(videoFile, 0);
+					System.out.println("readLocalFile: "
+							+ String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
+					mainVideoPlayer.links.readLocalFile(
+							String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
 					System.out.println(mainVideoPlayer.links);
 					// System.out.println(mainVideoPlayer.links.getKeySet());
 					// for (String key : mainVideoPlayer.links.getKeySet()) {
-					// 	for (Region region : mainVideoPlayer.links.getItems(key)) {
-					// 		System.out.println(region);
-					// 	}
+					// for (Region region : mainVideoPlayer.links.getItems(key)) {
+					// System.out.println(region);
+					// }
 					// }
 				} else {
 					// videoName.setText("file not selected");
@@ -418,4 +432,3 @@ public class VideoPlayer extends JPanel {
 	}
 
 }
-
