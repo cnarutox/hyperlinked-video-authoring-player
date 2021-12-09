@@ -39,6 +39,7 @@ public class VideoPlayer extends JPanel {
 	BufferedImage frameImg;
 	Thread t;
 
+	LinkCreate linkCreate;
 	VideoPlayer that = this;
 
 	public VideoPlayer() {
@@ -54,6 +55,7 @@ public class VideoPlayer extends JPanel {
 		// links.putRegion("C:/Users/16129/OneDrive - University of Southern
 		// California/CS576/DS/AIFilmOne", region2);
 		linkDisplay = new LinkDisplay();
+		linkCreate = new LinkCreate(this);
 		// links.toLocalFile("C:/Users/16129/OneDrive - University of Southern
 		// California/CS576/DS/links.txt");
 
@@ -123,11 +125,12 @@ public class VideoPlayer extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(frameImg, 5, 5, this);
-
 		if (videoPath == null)
 			return;
+		Graphics2D g2 = (Graphics2D) g;
+		g2.drawImage(frameImg, 5, 5, this);
+		if (linkCreate.isDrawing)
+			linkCreate.draw(g2);
 		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
 				videoPath.getAbsolutePath(), currentFrame);
 		for (Region region : regions) {

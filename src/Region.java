@@ -22,15 +22,14 @@ public class Region {
         }
 
         @Override
-        public String toString(){
-            return String.format("(%.2f, %.2f)(%.2f, %.2f)(%d)", this.xLeftTop, this.yLeftTop, this.xRightBottom, this.yRightBottom, this.frame);
+        public String toString() {
+            return String.format("(%.2f, %.2f)(%.2f, %.2f)(%d)", this.xLeftTop, this.yLeftTop, this.xRightBottom,
+                    this.yRightBottom, this.frame);
         }
-        
+
         public int getFrame() {
             return this.frame;
         }
-
-        
 
         public void resetBound(double xLeftTop, double yLeftTop, double xRightBottom, double yRightBottom) {
             this.xLeftTop = xLeftTop;
@@ -69,12 +68,18 @@ public class Region {
         this.endBound = new Bound(xStartLeftTop, yStartLeftTop, xStartRightBottom, yStartRightBottom, startFrame);
     }
 
-    @Override
-    public String toString(){
-        return String.format("%s->%s linked to: [%s](%d)", this.startBound.toString(), this.endBound.toString(), this.linkedFile, this.linkedFrame);
+    Region(double xStartLeftTop, double yStartLeftTop, double xStartRightBottom, double yStartRightBottom,
+            int startFrame, int endFrame) {
+        this.startBound = new Bound(xStartLeftTop, yStartLeftTop, xStartRightBottom, yStartRightBottom, startFrame);
+        this.endBound = new Bound(xStartLeftTop, yStartLeftTop, xStartRightBottom, yStartRightBottom, endFrame);
     }
 
-    
+    @Override
+    public String toString() {
+        return String.format("%s->%s linked to: [%s](%d)", this.startBound.toString(), this.endBound.toString(),
+                this.linkedFile, this.linkedFrame);
+    }
+
     public void setEnd(double xEndLeftTop, double yEndLeftTop, double xEndRightBottom, double yEndRightBottom,
             int endFrame) {
         this.endBound.resetBound(xEndLeftTop, yEndLeftTop, xEndRightBottom, yEndRightBottom);
@@ -100,15 +105,16 @@ public class Region {
         double curYRightBottom = this.startBound.yRightBottom
                 + (this.endBound.yRightBottom - this.startBound.yRightBottom)
                         / (this.endBound.frame - this.startBound.frame + 1) * (frame - this.startBound.frame);
-        Region newRegion = new Region(curXLeftTop, curYLeftTop, curXRightBottom, curYRightBottom, frame);
+        Region newRegion = new Region(curXLeftTop, curYLeftTop, curXRightBottom, curYRightBottom, frame, frame);
         newRegion.setLinkedInfo(this.linkedFile, this.linkedFrame);
         return newRegion;
     }
-    public int getLinkedFrame(){
+
+    public int getLinkedFrame() {
         return this.linkedFrame;
     }
 
-    public String getLinkedFile(){
+    public String getLinkedFile() {
         return this.linkedFile;
     }
 

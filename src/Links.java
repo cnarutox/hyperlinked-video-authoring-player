@@ -31,7 +31,7 @@ public class Links {
     public List<Region> inRegion(String fromFile, int frame) {
         ArrayList<Region> regions = new ArrayList<Region>();
         if (!linkedMap.containsKey(fromFile)) {
-            return null;
+            return regions;
         }
         for (Iterator<Region> it = linkedMap.get(fromFile).iterator(); it.hasNext();) {
             Region curRegion = (Region) it.next();
