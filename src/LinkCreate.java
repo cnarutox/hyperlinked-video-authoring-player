@@ -1,4 +1,5 @@
 import java.awt.event.MouseEvent;
+import java.text.CollationElementIterator;
 import java.awt.*;
 
 import javax.swing.*;
@@ -10,14 +11,18 @@ public class LinkCreate {
     VideoPlayer mainVideoPlayer;
 
     boolean isDrawing = false;
+    int regionIndex = -1;
 
     Point leftTop;
     Point rightBottom;
+    Color color;
 
     JPanel linkPanel = new JPanel(new BorderLayout());
     JButton createBtn = new JButton("Create Link");
     JLabel linkInfo = new JLabel("No link selected", JLabel.CENTER);
     JLabel operationInfo = new JLabel("You can import video and create hyperlink for them");
+
+    LinkCreate that = this;
 
     LinkCreate(VideoPlayer mainVideoPlayer) {
         this.mainVideoPlayer = mainVideoPlayer;
@@ -29,11 +34,17 @@ public class LinkCreate {
                 // TODO Auto-generated method stub
                 if (mainVideoPlayer.filelength == 0 || !Authoring.isCreating)
                     return;
-                mainVideoPlayer.isPaused = true;
                 mainVideoPlayer.audio.stop();
+                mainVideoPlayer.isPaused = true;
                 isDrawing = true;
                 leftTop = e.getPoint();
-                linkInfo.setText(String.format("from %d to ?", Authoring.mainVideoPlayer.currentFrame));
+                if (regionIndex == -1)
+                    linkInfo.setText(String.format("from %d to ?", Authoring.mainVideoPlayer.currentFrame));
+                else
+                    linkInfo.setText(
+                            linkInfo.getText().replaceAll("\\?",
+                                    Integer.toString(Authoring.mainVideoPlayer.currentFrame)));
+                color = regionIndex == -1 ? Color.BLUE : Color.GREEN;
             }
 
             @Override
@@ -50,20 +61,35 @@ public class LinkCreate {
                 // TODO Auto-generated method stub
                 if (!isDrawing)
                     return;
-                isDrawing = false;
-                Region region = new Region(Math.min(leftTop.x, rightBottom.x), Math.min(leftTop.y, rightBottom.y),
-                        Math.max(leftTop.x, rightBottom.x), Math.max(leftTop.y, rightBottom.y),
-                        mainVideoPlayer.currentFrame, mainVideoPlayer.filelength - 1);
-                mainVideoPlayer.links.putRegion(mainVideoPlayer.videoPath.getAbsolutePath(), region);
-                operationInfo.setText("Next is to set the bound of the end frame");
+                if (regionIndex == -1) {
+                    Region region = new Region(Math.min(leftTop.x, rightBottom.x), Math.min(leftTop.y, rightBottom.y),
+                            Math.max(leftTop.x, rightBottom.x), Math.max(leftTop.y, rightBottom.y),
+                            mainVideoPlayer.currentFrame, mainVideoPlayer.filelength - 1);
+                    regionIndex = mainVideoPlayer.links.linkedMap.size();
+                    mainVideoPlayer.links.putRegion(mainVideoPlayer.videoPath.getAbsolutePath(), region);
+                    operationInfo.setText("Next is to set the bound of the end frame");
+                    operationInfo.setForeground(Color.BLUE);
+                } else {
+                    Region region = mainVideoPlayer.links.linkedMap.get(mainVideoPlayer.videoPath.getAbsolutePath())
+                            .get(regionIndex);
+                    region.setEnd(Math.min(leftTop.x, rightBottom.x), Math.min(leftTop.y, rightBottom.y),
+                            Math.max(leftTop.x, rightBottom.x), Math.max(leftTop.y, rightBottom.y),
+                            mainVideoPlayer.currentFrame);
+                    isDrawing = false;
+                    regionIndex = -1;
+                    operationInfo.setText("Rename and save it!");
+                    operationInfo.setForeground(Color.GREEN);
+                }
             }
 
         };
         mainVideoPlayer.addMouseMotionListener(input);
         mainVideoPlayer.addMouseListener(input);
+        operationInfo.setForeground(Color.GRAY);
     }
 
     void draw(Graphics2D g2) {
+        g2.setPaint(color);
         g2.drawRect(Math.min(leftTop.x, rightBottom.x), Math.min(leftTop.y, rightBottom.y),
                 Math.abs(rightBottom.x - leftTop.x),
                 Math.abs(rightBottom.y - leftTop.y));
@@ -104,10 +130,13 @@ public class LinkCreate {
             if (createBtn.getText() == "Create Link") {
                 Authoring.isCreating = true;
                 mainVideoPlayer.isPaused = true;
+                mainVideoPlayer.audio.stop();
+                ;
                 createBtn.setText("   Cancel  ");
                 newLinkName.setText("New link");
                 linkInfo.setText(String.format("from %d to ?", Authoring.mainVideoPlayer.currentFrame));
                 operationInfo.setText("Please set the first bound of the start frame");
+                operationInfo.setForeground(Color.BLACK);
             } else {
                 Authoring.isCreating = false;
                 Authoring.mainVideoPlayer.links.removeLast();
@@ -115,9 +144,19 @@ public class LinkCreate {
                 newLinkName.setText("");
                 linkInfo.setText("No link selected");
                 operationInfo.setText("You can create hyperlink for them");
+                operationInfo.setForeground(Color.GRAY);
             }
         });
 
+        saveBtn.addActionListener(e -> {
+            if (Authoring.isCreating) {
+                Authoring.isCreating = false;
+                dataModel.addElement(newLinkName.getText());
+                createBtn.setText("Create Link");
+                operationInfo.setText("You can create hyperlink for them");
+                operationInfo.setForeground(Color.GRAY);
+            }
+        });
         return linkPanel;
     }
 

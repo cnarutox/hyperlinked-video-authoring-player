@@ -45,7 +45,9 @@ public class VideoPlayer extends JPanel {
 
 	public VideoPlayer() {
 		links = new Links();
-		// String videoSourcePath = "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/";
+		// String videoSourcePath = "C:/Users/16129/OneDrive - University of Southern
+		// California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354
+		// PM/";
 
 		// Region region1 = new Region(10, 10, 20, 20, 10);
 		// region1.setEnd(100, 100, 200, 200, 1000);
@@ -62,11 +64,12 @@ public class VideoPlayer extends JPanel {
 		// System.out.println(String.format("read from %s",
 		// String.format("%sAIFilmOne/%s.txt", videoSourcePath, "AIFilmOne")));
 
-		// links.readLocalFile(String.format("%sAIFilmOne/%s.txt", videoSourcePath, "AIFilmOne"));
+		// links.readLocalFile(String.format("%sAIFilmOne/%s.txt", videoSourcePath,
+		// "AIFilmOne"));
 		// for (String key : links.getKeySet()) {
-		// 	for (Region region : links.getItems(key)) {
-		// 		System.out.println(region);
-		// 	}
+		// for (Region region : links.getItems(key)) {
+		// System.out.println(region);
+		// }
 		// }
 
 		linkDisplay = new LinkDisplay();
@@ -74,7 +77,6 @@ public class VideoPlayer extends JPanel {
 		t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
-					// System.out.println(currentFrame + " " + cache.size());
 					if (cacheIndex >= filelength) {
 						continue;
 					}
@@ -106,13 +108,11 @@ public class VideoPlayer extends JPanel {
 				if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
 					currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime) / 1000) * 30;
 				}
-				// System.out.println("repaint ");
-				// System.out.println(links);
 				synchronized (cache) {
 					if (cache.containsKey(currentFrame)) {
 						that.frameImg = cache.get(currentFrame);
 						that.repaint();
-						
+
 						currentFrame += 1;
 						slider.setValue(currentFrame + 1);
 						return;
@@ -146,8 +146,7 @@ public class VideoPlayer extends JPanel {
 		g2.drawImage(frameImg, 5, 5, this);
 		if (Authoring.isCreating && linkCreate.isDrawing)
 			linkCreate.draw(g2);
-		// System.out.println(links);
-		
+
 		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
 				videoPath.getAbsolutePath(), currentFrame);
 		for (Region region : regions) {
@@ -293,7 +292,7 @@ public class VideoPlayer extends JPanel {
 		JPanel mainVideo = authoring.createVideoArea();
 		authoring.add(mainVideo);
 
-		VideoPlayer mainVideoPlayer = (VideoPlayer)mainVideo.getComponent(0);
+		VideoPlayer mainVideoPlayer = (VideoPlayer) mainVideo.getComponent(0);
 
 		JPanel importVideoPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));
 		JTextField mainVideoName = new JTextField(10);
@@ -311,14 +310,16 @@ public class VideoPlayer extends JPanel {
 					File videoFile = fc.getSelectedFile();
 					mainVideoName.setText(videoFile.getName());
 					mainVideoPlayer.importVideo(videoFile);
-					System.out.println("readLocalFile: " + String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
-					mainVideoPlayer.links.readLocalFile(String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
+					System.out.println("readLocalFile: "
+							+ String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
+					mainVideoPlayer.links.readLocalFile(
+							String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
 					System.out.println(mainVideoPlayer.links);
 					// System.out.println(mainVideoPlayer.links.getKeySet());
 					// for (String key : mainVideoPlayer.links.getKeySet()) {
-					// 	for (Region region : mainVideoPlayer.links.getItems(key)) {
-					// 		System.out.println(region);
-					// 	}
+					// for (Region region : mainVideoPlayer.links.getItems(key)) {
+					// System.out.println(region);
+					// }
 					// }
 				} else {
 					// videoName.setText("file not selected");
@@ -418,4 +419,3 @@ public class VideoPlayer extends JPanel {
 	}
 
 }
-
