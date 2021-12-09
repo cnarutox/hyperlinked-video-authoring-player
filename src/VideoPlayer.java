@@ -1,5 +1,4 @@
 
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -15,23 +14,22 @@ import javax.swing.event.MouseInputListener;
 
 public class VideoPlayer extends JPanel {
 
-	static int width = 352;
-	static int height = 288;
-	static BufferedImage frameN;
-	static int currentFrame = 0;
-	static BufferedImage BI;
-	static String[] files;
-	static Boolean isPaused = true;
+	int width = 352;
+	int height = 288;
+	BufferedImage frameN;
+	int currentFrame = 0;
+	BufferedImage BI;
+	String[] files;
+	Boolean isPaused = true;
 
-	static boolean firstStart = true;
-	static long startTime;
-	static long currentTotalTime = 0;
-	static long lastStartTime;
-	static int filelength = 9000;
+	boolean firstStart = true;
+	long startTime;
+	long currentTotalTime = 0;
+	long lastStartTime;
+	int filelength = 9000;
 	JSlider slider;
 	int cacheIndex;
 	int soundindex;
-
 
 	// static PlaySound playSound;
 
@@ -44,7 +42,7 @@ public class VideoPlayer extends JPanel {
 	}
 
 	public VideoPlayer(Authoring.ImportVideo importPanel) {
-		importPanel.linkedPlayer = this;
+		importPanel.mainPlayer = this;
 	}
 
 	class LRUCache extends LinkedHashMap<Integer, BufferedImage> {
@@ -229,17 +227,14 @@ public class VideoPlayer extends JPanel {
 	JButton bSelect = new JButton("Select");
 	JLabel frameLabel;
 
-	public void link(Authoring.ImportVideo importVideo, JSlider jSlider, JButton play, JButton pause, JLabel label) {
-		importVideo.linkedPlayer = this;
+	public void binding(JSlider jSlider, JButton play, JButton pause, JLabel label) {
 		slider = jSlider;
 		btnPlay = play;
 		btnPause = pause;
 		frameLabel = label;
 	}
 
-	public void importVideo(Authoring.ImportVideo importPanel) {
-		
-		File videoPath = importPanel.videoFile;
+	public void importVideo(File videoPath) {
 		Sound audio = new Sound(
 				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
 		cacheIndex = 0;
@@ -350,7 +345,7 @@ public class VideoPlayer extends JPanel {
 			isPaused = true;
 			audio.stop();
 			currentFrame = source.getValue() - 1;
-			
+
 			if (cache.containsKey(currentFrame)) {
 				that.frameImg = cache.get(currentFrame);
 			} else {

@@ -3,6 +3,7 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.text.AttributeSet.ColorAttribute;
 
 import java.awt.event.*;
 import java.io.File;
@@ -16,30 +17,75 @@ public class Authoring extends JFrame {
     }
 
     public static class ImportVideo extends JPanel {
-        JLabel label = new JLabel("Imported Video Path");
-        JTextField videoNameField = new JTextField(25);
-        JButton viewBtn = new JButton("View");
-        File videoFile;
-        VideoPlayer linkedPlayer;
+        JLabel label = new JLabel("Main Vieo Path");
+        JTextField mainVideoName = new JTextField(20);
+        JButton mainBtn = new JButton("Import Main Video");
+        JButton secondBtn = new JButton("Import Linked Video");
+        DefaultListModel listModel = new DefaultListModel();
+        JScrollPane scrollPane = new JScrollPane();
+
+        VideoPlayer mainPlayer, secondPlayer;
 
         public ImportVideo() {
-            super();
-            this.add(label);
-            this.add(videoNameField);
-            this.add(viewBtn);
-            ImportVideo that = this;
-            viewBtn.addActionListener(new ActionListener() {
+            super(new FlowLayout(FlowLayout.LEADING, 30, 20));
+            add(label);
+            add(mainVideoName);
+            add(mainBtn);
+            add(secondBtn);
+            add(scrollPane);
+
+            JList list = new JList(listModel);
+            list.setVisibleRowCount(2);
+            list.setLayoutOrientation(JList.VERTICAL_WRAP);
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            scrollPane.setViewportView(list);
+            scrollPane.setPreferredSize(new Dimension(300, 60));
+
+            mainBtn.addActionListener(new ActionListener() {
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(
-                            "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne");
+                    // TODO Auto-generated method stub
+                    JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
                     fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int val = fc.showOpenDialog(null); 
+                    int val = fc.showOpenDialog(null);
                     if (val == JFileChooser.APPROVE_OPTION) {
-                        videoFile = fc.getSelectedFile();
-                        System.out.println(videoFile);
-                        videoNameField.setText(videoFile.getAbsolutePath());
-                        linkedPlayer.importVideo(that);
+                        File videoFile = fc.getSelectedFile();
+                        mainVideoName.setText(videoFile.getAbsolutePath());
+                        mainPlayer.importVideo(videoFile);
+                        System.out.println("Main Video: " + videoFile);
+                    } else {
+                        // videoName.setText("file not selected");
+                    }
+                }
+            });
+            list.addListSelectionListener(new ListSelectionListener() {
+
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    // TODO Auto-generated method stub
+                    if (e.getValueIsAdjusting() == false) {
+                        if (list.getSelectedIndex() == -1) {
+                            // No selection, disable fire button.
+                        } else {
+                            System.out.println("Select" + list.getSelectedValue());
+                        }
+                    }
+                }
+            });
+            secondBtn.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+                    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    int val = fc.showOpenDialog(null);
+                    if (val == JFileChooser.APPROVE_OPTION) {
+                        File videoFile = fc.getSelectedFile();
+                        System.out.println("Load Video: " + videoFile);
+                        listModel.addElement(videoFile.getName());
+                        list.setSelectedIndex(listModel.lastIndexOf(listModel.lastElement()));
+                        secondPlayer.importVideo(videoFile);
                     } else {
                         // videoName.setText("file not selected");
                     }
@@ -49,21 +95,14 @@ public class Authoring extends JFrame {
 
     }
 
-    public static void main(String[] args) {
-        Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
-        authoring.setLayout(new BorderLayout());
-
-        ImportVideo importPanel = new ImportVideo();
-        authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
-
+    public JPanel createVideoPlayer() {
+        JPanel videoArea = new JPanel(new BorderLayout());
 
         VideoPlayer videoPlayer = new VideoPlayer();
-        
-        
-        authoring.getContentPane().add(videoPlayer, BorderLayout.SOUTH);
-        
+        videoPlayer.setBackground(Color.YELLOW);
 
         JLabel frameLabel = new JLabel("0", JLabel.CENTER);
+
         JSlider slider = new JSlider(1, 9000);
         slider.setMajorTickSpacing(900);
         // slider.setMinorTickSpacing(30);
@@ -76,14 +115,33 @@ public class Authoring extends JFrame {
         JButton playBtn = new JButton("Play");
         btnPanel.add(pauseBtn);
         btnPanel.add(playBtn);
-        videoPlayer.link(importPanel, slider, playBtn, pauseBtn, frameLabel);
+        videoPlayer.binding(slider, playBtn, pauseBtn, frameLabel);
 
         JPanel frameSlider = new JPanel(new BorderLayout(10, 5));
         frameSlider.add(btnPanel, BorderLayout.NORTH);
         frameSlider.add(frameLabel, BorderLayout.CENTER);
         frameSlider.add(slider, BorderLayout.SOUTH);
 
-        authoring.getContentPane().add(frameSlider, BorderLayout.SOUTH);
+        videoArea.add(videoPlayer, BorderLayout.CENTER);
+        videoArea.add(frameSlider, BorderLayout.SOUTH);
+        return videoArea;
+    }
+
+    public static void main(String[] args) {
+        Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
+        authoring.setLayout(new BorderLayout());
+
+        ImportVideo importPanel = new ImportVideo();
+        authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
+
+        JPanel mainVideo = authoring.createVideoPlayer();
+        importPanel.mainPlayer = (VideoPlayer) mainVideo.getComponent(0);
+        authoring.add(mainVideo, BorderLayout.WEST);
+
+        JPanel secondVideo = authoring.createVideoPlayer();
+        importPanel.secondPlayer = (VideoPlayer) secondVideo.getComponent(0);
+        authoring.add(secondVideo, BorderLayout.EAST);
+
         authoring.pack();
         authoring.setVisible(true);
         authoring.setPreferredSize(new Dimension(720, 480));
