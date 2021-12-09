@@ -70,7 +70,6 @@ public class VideoPlayer extends JPanel {
 		// }
 
 		linkDisplay = new LinkDisplay();
-		linkCreate = new LinkCreate(this);
 
 		t = new Thread(new Runnable() {
 			public void run() {

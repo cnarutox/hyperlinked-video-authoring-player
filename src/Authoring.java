@@ -147,7 +147,7 @@ public class Authoring extends JFrame {
         mainVideoPlayer = (VideoPlayer) mainArea.getComponent(0);
         authoring.add(mainArea, BorderLayout.WEST);
 
-        JPanel linkPanel = authoring.linkArea();
+        JPanel linkPanel = new LinkCreate(mainVideoPlayer).linkArea();
         authoring.add(linkPanel, BorderLayout.CENTER);
 
         JPanel secondArea = authoring.createVideoArea();
@@ -161,59 +161,4 @@ public class Authoring extends JFrame {
         authoring.setPreferredSize(new Dimension(720, 480));
     }
 
-    JPanel linkArea() {
-        JPanel linkPanel = new JPanel(new BorderLayout());
-
-        JButton createBtn = new JButton("Create Link");
-        JTextField newLinkName = new JTextField(10);
-        newLinkName.setHorizontalAlignment(JTextField.CENTER);
-        JButton saveBtn = new JButton(" Save Link ");
-
-        JPanel north = new JPanel();
-        north.add(createBtn);
-        north.add(newLinkName);
-        north.add(saveBtn);
-        // north.setMaximumSize(new Dimension(200, 100));
-        linkPanel.add(north, BorderLayout.NORTH);
-
-        JScrollPane scrollPane = new JScrollPane();
-        DefaultListModel dataModel = new DefaultListModel<String>();
-        JList linksList = new JList<String>(dataModel);
-        linksList.setVisibleRowCount(5);
-        linksList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        linksList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        dataModel.addElement("element");
-        scrollPane.setViewportView(linksList);
-        JLabel linkInfo = new JLabel("No link selected", JLabel.CENTER);
-        JLabel operationInfo = new JLabel("2323");
-
-        JPanel center = new JPanel(new BorderLayout());
-        center.add(linkInfo, BorderLayout.NORTH);
-        center.add(scrollPane, BorderLayout.CENTER);
-        linkPanel.add(center, BorderLayout.CENTER);
-
-        JPanel south = new JPanel();
-        south.add(operationInfo);
-        south.setMinimumSize(new Dimension(20, 40));
-        linkPanel.add(south, BorderLayout.SOUTH);
-
-        createBtn.addActionListener(e -> {
-            if (createBtn.getText() == "Create Link") {
-                isCreating = true;
-                createBtn.setText("   Cancel  ");
-                newLinkName.setText("New link");
-                linkInfo.setText(String.format("from %d to ?", secondVideoPlayer.currentFrame));
-                operationInfo.setText("Please set first bound");
-            } else {
-                isCreating = false;
-                mainVideoPlayer.links.removeLast();
-                createBtn.setText("Create Link");
-                newLinkName.setText("");
-                linkInfo.setText("No link selected");
-                operationInfo.setText(" ");
-            }
-        });
-
-        return linkPanel;
-    }
 }
