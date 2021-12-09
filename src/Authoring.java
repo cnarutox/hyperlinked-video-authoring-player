@@ -28,6 +28,7 @@ public class Authoring extends JFrame {
         JTextField mainVideoName = new JTextField(10);
         JButton mainBtn = new JButton("Import Main Video");
         JButton secondBtn = new JButton("Import Linked Video");
+        JButton saveFile = new JButton("Save HyperLinked Video");
         static DefaultListModel listModel = new DefaultListModel();
         static JList list = new JList(listModel);
         JScrollPane scrollPane = new JScrollPane();
@@ -41,6 +42,7 @@ public class Authoring extends JFrame {
             add(mainBtn);
             add(secondBtn);
             add(scrollPane);
+            add(saveFile);
 
             list.setVisibleRowCount(2);
             list.setLayoutOrientation(JList.VERTICAL_WRAP);
@@ -75,7 +77,7 @@ public class Authoring extends JFrame {
                         if (list.getSelectedIndex() == -1) {
                             // No selection, disable fire button.
                         } else {
-                            System.out.println("Select " + list.getSelectedValue());
+                            System.out.println("Select File" + list.getSelectedValue());
                             secondVideoPlayer.importVideo(videofiles.get(list.getSelectedValue()), 0);
                         }
                     }
@@ -100,6 +102,11 @@ public class Authoring extends JFrame {
                         // videoName.setText("file not selected");
                     }
                 }
+            });
+
+            saveFile.addActionListener(e -> {
+                if (mainVideoPlayer.videoPath != null)
+                    mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath);
             });
         }
 
