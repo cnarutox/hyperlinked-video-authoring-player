@@ -2,6 +2,7 @@
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.event.*;
 import javax.swing.text.AttributeSet.ColorAttribute;
 
@@ -12,6 +13,10 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Authoring extends JFrame {
+
+    static Authoring authoring;
+    static boolean isCreating = false;
+    static VideoPlayer mainVideoPlayer, secondVideoPlayer;
 
     public Authoring(String s) {
         super(s);
@@ -26,8 +31,6 @@ public class Authoring extends JFrame {
         JScrollPane scrollPane = new JScrollPane();
 
         HashMap<String, File> videofiles = new HashMap<String, File>();
-
-        VideoPlayer mainPlayer, secondPlayer;
 
         public ImportVideo() {
             super(new FlowLayout(FlowLayout.LEADING, 10, 5));
@@ -55,7 +58,7 @@ public class Authoring extends JFrame {
                     if (val == JFileChooser.APPROVE_OPTION) {
                         File videoFile = fc.getSelectedFile();
                         mainVideoName.setText(videoFile.getName());
-                        mainPlayer.importVideo(videoFile);
+                        mainVideoPlayer.importVideo(videoFile);
                         System.out.println("Main Video: " + videoFile);
                     } else {
                         // videoName.setText("file not selected");
@@ -72,7 +75,7 @@ public class Authoring extends JFrame {
                             // No selection, disable fire button.
                         } else {
                             System.out.println("Select " + list.getSelectedValue());
-                            secondPlayer.importVideo(videofiles.get(list.getSelectedValue()));
+                            secondVideoPlayer.importVideo(videofiles.get(list.getSelectedValue()));
                         }
                     }
                 }
@@ -101,7 +104,7 @@ public class Authoring extends JFrame {
 
     }
 
-    public JPanel createVideoPlayer() {
+    public JPanel createVideoArea() {
         JPanel videoArea = new JPanel(new BorderLayout());
 
         VideoPlayer videoPlayer = new VideoPlayer();
@@ -134,25 +137,83 @@ public class Authoring extends JFrame {
     }
 
     public static void main(String[] args) {
-        Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
+        authoring = new Authoring("HyperLinked Video Authoring Tool");
         authoring.setLayout(new BorderLayout());
 
         ImportVideo importPanel = new ImportVideo();
         authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
 
-        JPanel mainVideo = authoring.createVideoPlayer();
-        importPanel.mainPlayer = (VideoPlayer) mainVideo.getComponent(0);
-        
-        authoring.add(mainVideo, BorderLayout.WEST);
+        JPanel mainArea = authoring.createVideoArea();
+        mainVideoPlayer = (VideoPlayer) mainArea.getComponent(0);
+        authoring.add(mainArea, BorderLayout.WEST);
 
-        JPanel secondVideo = authoring.createVideoPlayer();
-        importPanel.secondPlayer = (VideoPlayer) secondVideo.getComponent(0);
-        authoring.add(secondVideo, BorderLayout.EAST);
+        JPanel linkPanel = authoring.linkArea();
+        authoring.add(linkPanel, BorderLayout.CENTER);
+
+        JPanel secondArea = authoring.createVideoArea();
+        secondVideoPlayer = (VideoPlayer) secondArea.getComponent(0);
+        authoring.add(secondArea, BorderLayout.EAST);
 
         authoring.pack();
         authoring.setVisible(true);
-        authoring.setPreferredSize(new Dimension(720, 480));
         authoring.setLocationRelativeTo(null);
         authoring.setDefaultCloseOperation(3);
+        authoring.setPreferredSize(new Dimension(720, 480));
+    }
+
+    JPanel linkArea() {
+        JPanel linkPanel = new JPanel(new BorderLayout());
+
+        JButton createBtn = new JButton("Create Link");
+        JTextField newLinkName = new JTextField(10);
+        newLinkName.setHorizontalAlignment(JTextField.CENTER);
+        JButton saveBtn = new JButton(" Save Link ");
+
+        JPanel north = new JPanel();
+        north.add(createBtn);
+        north.add(newLinkName);
+        north.add(saveBtn);
+        // north.setMaximumSize(new Dimension(200, 100));
+        linkPanel.add(north, BorderLayout.NORTH);
+
+        JScrollPane scrollPane = new JScrollPane();
+        DefaultListModel dataModel = new DefaultListModel<String>();
+        JList linksList = new JList<String>(dataModel);
+        linksList.setVisibleRowCount(5);
+        linksList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        linksList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        dataModel.addElement("element");
+        scrollPane.setViewportView(linksList);
+        JLabel linkInfo = new JLabel("No link selected", JLabel.CENTER);
+        JLabel operationInfo = new JLabel("2323");
+
+        JPanel center = new JPanel(new BorderLayout());
+        center.add(linkInfo, BorderLayout.NORTH);
+        center.add(scrollPane, BorderLayout.CENTER);
+        linkPanel.add(center, BorderLayout.CENTER);
+
+        JPanel south = new JPanel();
+        south.add(operationInfo);
+        south.setMinimumSize(new Dimension(20, 40));
+        linkPanel.add(south, BorderLayout.SOUTH);
+
+        createBtn.addActionListener(e -> {
+            if (createBtn.getText() == "Create Link") {
+                isCreating = true;
+                createBtn.setText("   Cancel  ");
+                newLinkName.setText("New link");
+                linkInfo.setText(String.format("from %d to ?", secondVideoPlayer.currentFrame));
+                operationInfo.setText("Please set first bound");
+            } else {
+                isCreating = false;
+                mainVideoPlayer.links.removeLast();
+                createBtn.setText("Create Link");
+                newLinkName.setText("");
+                linkInfo.setText("No link selected");
+                operationInfo.setText(" ");
+            }
+        });
+
+        return linkPanel;
     }
 }

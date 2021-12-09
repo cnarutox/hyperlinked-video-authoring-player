@@ -18,7 +18,7 @@ public class LinkCreate {
             @Override
             public void mousePressed(MouseEvent e) {
                 // TODO Auto-generated method stub
-                if (videoPanel.filelength == 0)
+                if (videoPanel.filelength == 0 || !Authoring.isCreating)
                     return;
                 videoPanel.isPaused = true;
                 videoPanel.audio.stop();
@@ -29,6 +29,8 @@ public class LinkCreate {
             @Override
             public void mouseDragged(MouseEvent e) {
                 // TODO Auto-generated method stub
+                if (!isDrawing)
+                    return;
                 rightBottom = e.getPoint();
                 videoPanel.repaint();
             }

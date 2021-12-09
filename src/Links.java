@@ -4,6 +4,7 @@ import java.io.*;
 public class Links {
 
     Map<String, List<Region>> linkedMap = new HashMap<String, List<Region>>();
+    String fromFile;
 
     public Set<String> getKeySet() {
         return this.linkedMap.keySet();
@@ -24,6 +25,12 @@ public class Links {
 
     public List<Region> getItems(String fileName) {
         return this.linkedMap.get(fileName);
+    }
+
+    public void removeLast() {
+        if (linkedMap.containsKey(fromFile) && linkedMap.get(fromFile).size() > 1) {
+            linkedMap.get(fromFile).remove(linkedMap.get(fromFile).size() - 1);
+        }
     }
 
     public void putRegion(String fromFile, Region newRegion) {

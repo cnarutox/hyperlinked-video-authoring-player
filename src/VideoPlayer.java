@@ -145,7 +145,7 @@ public class VideoPlayer extends JPanel {
 			return;
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(frameImg, 5, 5, this);
-		if (linkCreate.isDrawing)
+		if (Authoring.isCreating && linkCreate.isDrawing)
 			linkCreate.draw(g2);
 		// System.out.println(links);
 		
@@ -230,6 +230,7 @@ public class VideoPlayer extends JPanel {
 	public void importVideo(File videoPath) {
 		this.videoPath = videoPath;
 		System.out.println("importVideo " + videoPath);
+		links.fromFile = videoPath.getAbsolutePath();
 		isPaused = true;
 		beforeDragStatus = true;
 		currentFrame = 0;
@@ -290,7 +291,7 @@ public class VideoPlayer extends JPanel {
 		Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
 		// Authoring.ImportVideo importPanel = new Authoring.ImportVideo();
 		// authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
-		JPanel mainVideo = authoring.createVideoPlayer();
+		JPanel mainVideo = authoring.createVideoArea();
 		authoring.add(mainVideo);
 
 		VideoPlayer mainVideoPlayer = (VideoPlayer)mainVideo.getComponent(0);
