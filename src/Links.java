@@ -4,14 +4,22 @@ import java.io.*;
 public class Links {
 
     Map<String, List<Region>> linkedMap = new HashMap<String, List<Region>>();
+    String fromFile;
 
-    public Set<String> getKeySet(){
+    public Set<String> getKeySet() {
         return this.linkedMap.keySet();
     }
 
-    public List<Region> getItems(String fileName){
+    public List<Region> getItems(String fileName) {
         return this.linkedMap.get(fileName);
     }
+
+    public void removeLast() {
+        if (linkedMap.containsKey(fromFile) && linkedMap.get(fromFile).size() > 1) {
+            linkedMap.get(fromFile).remove(linkedMap.get(fromFile).size() - 1);
+        }
+    }
+
     public void putRegion(String fromFile, Region newRegion) {
         if (linkedMap.containsKey(fromFile)) {
             ArrayList<Region> regionList = (ArrayList<Region>) linkedMap.get(fromFile);
@@ -38,7 +46,7 @@ public class Links {
             if (curRegion.getBound(frame) != null) {
                 regions.add(curRegion.getBound(frame));
             }
-            
+
         }
         // System.out.println("inregion " + frame + " " + regions.size());
         return regions;
@@ -50,30 +58,31 @@ public class Links {
             File file = new File(localFilePath);
             br = new BufferedReader(new FileReader(file));
             String line;
-            
+
             int index = 0;
             Region curRegion;
             while ((line = br.readLine()) != null) {
                 String fromFilePath = "";
-                if (index == 0){
+                if (index == 0) {
                     fromFilePath = line;
-                }
-                else{
+                } else {
                     String[] info = line.split("-", -2);
-                    if (info.length != 4){
+                    if (info.length != 4) {
                         continue;
                     }
                     String[] firstInfo = info[0].split(",", -2);
-                    if (firstInfo.length != 5){
+                    if (firstInfo.length != 5) {
                         continue;
                     }
-                    curRegion = new Region(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]), Double.valueOf(firstInfo[2]),Double.valueOf(firstInfo[3]), Integer.valueOf(firstInfo[4]));
+                    curRegion = new Region(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]),
+                            Double.valueOf(firstInfo[2]), Double.valueOf(firstInfo[3]), Integer.valueOf(firstInfo[4]));
                     firstInfo = info[1].split(",", -2);
-                    if (firstInfo.length != 5){
+                    if (firstInfo.length != 5) {
                         continue;
                     }
-                    curRegion.setEnd(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]), Double.valueOf(firstInfo[2]),Double.valueOf(firstInfo[3]), Integer.valueOf(firstInfo[4]));
-                    curRegion.setLinkedInfo(info[2], Integer.valueOf(info[3])); 
+                    curRegion.setEnd(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]),
+                            Double.valueOf(firstInfo[2]), Double.valueOf(firstInfo[3]), Integer.valueOf(firstInfo[4]));
+                    curRegion.setLinkedInfo(info[2], Integer.valueOf(info[3]));
                     putRegion(fromFilePath, curRegion);
                 }
                 index += 1;

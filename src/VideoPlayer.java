@@ -129,7 +129,7 @@ public class VideoPlayer extends JPanel {
 			return;
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(frameImg, 5, 5, this);
-		if (linkCreate.isDrawing)
+		if (Authoring.isCreating && linkCreate.isDrawing)
 			linkCreate.draw(g2);
 		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
 				videoPath.getAbsolutePath(), currentFrame);
@@ -209,6 +209,7 @@ public class VideoPlayer extends JPanel {
 
 	public void importVideo(File videoPath) {
 		this.videoPath = videoPath;
+		links.fromFile = videoPath.getAbsolutePath();
 		isPaused = true;
 		beforeDragStatus = true;
 		currentFrame = 0;
