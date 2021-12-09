@@ -58,7 +58,7 @@ public class Authoring extends JFrame {
                     if (val == JFileChooser.APPROVE_OPTION) {
                         File videoFile = fc.getSelectedFile();
                         mainVideoName.setText(videoFile.getName());
-                        mainVideoPlayer.importVideo(videoFile);
+                        mainVideoPlayer.importVideo(videoFile, 0);
                         System.out.println("Main Video: " + videoFile);
                     } else {
                         // videoName.setText("file not selected");
@@ -75,7 +75,7 @@ public class Authoring extends JFrame {
                             // No selection, disable fire button.
                         } else {
                             System.out.println("Select " + list.getSelectedValue());
-                            secondVideoPlayer.importVideo(videofiles.get(list.getSelectedValue()));
+                            secondVideoPlayer.importVideo(videofiles.get(list.getSelectedValue()), 0);
                         }
                     }
                 }

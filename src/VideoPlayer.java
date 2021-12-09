@@ -72,7 +72,7 @@ public class VideoPlayer extends JPanel {
 		// }
 		// }
 
-		linkDisplay = new LinkDisplay();
+		linkDisplay = new LinkDisplay(this);
 
 		t = new Thread(new Runnable() {
 			public void run() {
@@ -144,14 +144,10 @@ public class VideoPlayer extends JPanel {
 			return;
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(frameImg, 5, 5, this);
-		if (Authoring.isCreating && linkCreate.isDrawing)
+		if (Authoring.isCreating && linkCreate != null && linkCreate.isDrawing)
 			linkCreate.draw(g2);
-
-		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
-				videoPath.getAbsolutePath(), currentFrame);
-		for (Region region : regions) {
-			linkDisplay.draw(region, g2);
-		}
+		linkDisplay.drawRegion(g2);
+		// }
 	}
 
 	boolean beforeDragStatus = false;
@@ -225,20 +221,26 @@ public class VideoPlayer extends JPanel {
 		});
 	}
 
-	public void importVideo(File videoPath) {
+	public void importVideo(File videoPath, int startFrame) {
+		if (audio != null)
+			audio.stop();
+
 		this.videoPath = videoPath;
 		System.out.println("importVideo " + videoPath);
 		links.fromFile = videoPath.getAbsolutePath();
 		isPaused = true;
 		beforeDragStatus = true;
-		currentFrame = 0;
-		cacheIndex = 0;
-		lastStartTime = 0;
-		currentTotalTime = 0;
 		cache.clear();
-		slider.setValue(1);
-		if (audio != null)
-			audio.stop();
+		lastStartTime = 0;
+		if (linkCreate != null) {
+			linkCreate.createBtn.setEnabled(true);
+			linkCreate.saveBtn.setEnabled(true);
+		}
+
+		currentFrame = startFrame;
+		cacheIndex = currentFrame;
+		currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
+		slider.setValue(startFrame + 1);
 
 		audio = new Sound(
 				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
@@ -253,9 +255,10 @@ public class VideoPlayer extends JPanel {
 		}
 		filelength = index;
 		slider.setMaximum(filelength);
+
 		if (frameImg == null)
 			frameImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
-		frameImg = readImageRGB(width, height, videoPath.getAbsolutePath() + "/" + files[0], frameImg);
+		frameImg = readImageRGB(width, height, videoPath.getAbsolutePath() + "/" + files[currentFrame], frameImg);
 		repaint();
 	}
 
@@ -309,7 +312,7 @@ public class VideoPlayer extends JPanel {
 				if (val == JFileChooser.APPROVE_OPTION) {
 					File videoFile = fc.getSelectedFile();
 					mainVideoName.setText(videoFile.getName());
-					mainVideoPlayer.importVideo(videoFile);
+					mainVideoPlayer.importVideo(videoFile, 0);
 					System.out.println("readLocalFile: "
 							+ String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
 					mainVideoPlayer.links.readLocalFile(

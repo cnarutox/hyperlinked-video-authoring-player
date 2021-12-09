@@ -28,8 +28,10 @@ public class Links {
     }
 
     public void removeLast() {
-        if (linkedMap.containsKey(fromFile) && linkedMap.get(fromFile).size() > 1) {
+        if (linkedMap.containsKey(fromFile) && linkedMap.get(fromFile).size() > 0) {
+            System.out.println(linkedMap.get(fromFile));
             linkedMap.get(fromFile).remove(linkedMap.get(fromFile).size() - 1);
+            System.out.println(linkedMap);
         }
     }
 
@@ -50,7 +52,6 @@ public class Links {
 
     // get all region(with bound and linkedframe) within frame
     public List<Region> inRegion(String fromFile, int frame) {
-        fromFile.replace("\\", "\\/");
         ArrayList<Region> regions = new ArrayList<Region>();
         if (!linkedMap.containsKey(fromFile)) {
             return regions;

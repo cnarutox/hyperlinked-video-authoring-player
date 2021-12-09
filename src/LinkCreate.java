@@ -19,6 +19,7 @@ public class LinkCreate {
 
     JPanel linkPanel = new JPanel(new BorderLayout());
     JButton createBtn = new JButton("Create Link");
+    JButton saveBtn = new JButton(" Save Link ");
     JLabel linkInfo = new JLabel("No link selected", JLabel.CENTER);
     JLabel operationInfo = new JLabel("You can import video and create hyperlink for them");
 
@@ -44,7 +45,7 @@ public class LinkCreate {
                     linkInfo.setText(
                             linkInfo.getText().replaceAll("\\?",
                                     Integer.toString(Authoring.mainVideoPlayer.currentFrame)));
-                color = regionIndex == -1 ? Color.BLUE : Color.GREEN;
+                color = regionIndex == -1 ? Color.BLUE : Color.PINK;
             }
 
             @Override
@@ -65,10 +66,11 @@ public class LinkCreate {
                     Region region = new Region(Math.min(leftTop.x, rightBottom.x), Math.min(leftTop.y, rightBottom.y),
                             Math.max(leftTop.x, rightBottom.x), Math.max(leftTop.y, rightBottom.y),
                             mainVideoPlayer.currentFrame, mainVideoPlayer.filelength - 1);
-                    regionIndex = mainVideoPlayer.links.linkedMap.size();
                     mainVideoPlayer.links.putRegion(mainVideoPlayer.videoPath.getAbsolutePath(), region);
+                    regionIndex = mainVideoPlayer.links.linkedMap.get(mainVideoPlayer.videoPath.getAbsolutePath())
+                            .size() - 1;
                     operationInfo.setText("Next is to set the bound of the end frame");
-                    operationInfo.setForeground(Color.BLUE);
+                    operationInfo.setForeground(Color.PINK);
                 } else {
                     Region region = mainVideoPlayer.links.linkedMap.get(mainVideoPlayer.videoPath.getAbsolutePath())
                             .get(regionIndex);
@@ -76,9 +78,9 @@ public class LinkCreate {
                             Math.max(leftTop.x, rightBottom.x), Math.max(leftTop.y, rightBottom.y),
                             mainVideoPlayer.currentFrame);
                     isDrawing = false;
-                    regionIndex = -1;
                     operationInfo.setText("Rename and save it!");
-                    operationInfo.setForeground(Color.GREEN);
+                    operationInfo.setForeground(Color.BLACK);
+                    mainVideoPlayer.repaint();
                 }
             }
 
@@ -98,7 +100,6 @@ public class LinkCreate {
     JPanel linkArea() {
         JTextField newLinkName = new JTextField(10);
         newLinkName.setHorizontalAlignment(JTextField.CENTER);
-        JButton saveBtn = new JButton(" Save Link ");
 
         JPanel north = new JPanel();
         north.add(createBtn);
@@ -113,7 +114,6 @@ public class LinkCreate {
         linksList.setVisibleRowCount(5);
         linksList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         linksList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        dataModel.addElement("element");
         scrollPane.setViewportView(linksList);
 
         JPanel center = new JPanel(new BorderLayout());
@@ -131,15 +131,16 @@ public class LinkCreate {
                 Authoring.isCreating = true;
                 mainVideoPlayer.isPaused = true;
                 mainVideoPlayer.audio.stop();
-                ;
                 createBtn.setText("   Cancel  ");
                 newLinkName.setText("New link");
                 linkInfo.setText(String.format("from %d to ?", Authoring.mainVideoPlayer.currentFrame));
                 operationInfo.setText("Please set the first bound of the start frame");
-                operationInfo.setForeground(Color.BLACK);
+                operationInfo.setForeground(Color.BLUE);
             } else {
+                isDrawing = false;
                 Authoring.isCreating = false;
                 Authoring.mainVideoPlayer.links.removeLast();
+                regionIndex = -1;
                 createBtn.setText("Create Link");
                 newLinkName.setText("");
                 linkInfo.setText("No link selected");
@@ -147,16 +148,25 @@ public class LinkCreate {
                 operationInfo.setForeground(Color.GRAY);
             }
         });
+        createBtn.setEnabled(false);
 
         saveBtn.addActionListener(e -> {
-            if (Authoring.isCreating) {
+            if (Authoring.isCreating && !isDrawing) {
+                if (Authoring.secondVideoPlayer.filelength == 0) {
+                    JOptionPane.showMessageDialog(Authoring.authoring, "Please import the second video!",
+                            "2st video not specified", 1);
+                    return;
+                }
                 Authoring.isCreating = false;
                 dataModel.addElement(newLinkName.getText());
                 createBtn.setText("Create Link");
+                newLinkName.setText("");
                 operationInfo.setText("You can create hyperlink for them");
                 operationInfo.setForeground(Color.GRAY);
+                mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath.getAbsolutePath());
             }
         });
+        saveBtn.setEnabled(false);
         return linkPanel;
     }
 
