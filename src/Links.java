@@ -119,8 +119,13 @@ public class Links {
     }
 
     public void toLocalFile(String localFilePath) {
-
-        File file = new File(localFilePath);
+        File curFile = new File(localFilePath);
+        if (!curFile.exists() || !curFile.isDirectory()) {
+            System.out.println("Error: toLocalFile() localFilePath not legal.");
+            return;
+        }
+        File file = new File(localFilePath + File.separator + localFilePath.split(File.separator)[-1] + ".txt");
+        System.out.println("toLocalFile: " + file.getName());
         BufferedWriter bf = null;
         try {
             bf = new BufferedWriter(new FileWriter(localFilePath));

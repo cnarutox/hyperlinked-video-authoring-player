@@ -45,9 +45,8 @@ public class VideoPlayer extends JPanel {
 
 	public VideoPlayer() {
 		links = new Links();
-		// String videoSourcePath = "C:/Users/16129/OneDrive - University of Southern
-		// California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354
-		// PM/";
+		
+		// String videoSourcePath = videoPath.getAbsolutePath();
 
 		// Region region1 = new Region(10, 10, 20, 20, 10);
 		// region1.setEnd(100, 100, 200, 200, 1000);
@@ -56,10 +55,9 @@ public class VideoPlayer extends JPanel {
 		// region2.setEnd(10, 10, 20, 20, 2000);
 		// region2.setLinkedInfo(String.format("%sAIFilmTwo", videoSourcePath), 1000);
 
-		// links.putRegion(String.format("%sAIFilmOne", videoSourcePath), region1);
-		// links.putRegion(String.format("%sAIFilmOne", videoSourcePath), region2);
-		// links.toLocalFile(String.format("%sAIFilmOne/%s.txt", videoSourcePath,
-		// "AIFilmOne"));
+		// links.putRegion(String.format("%s", videoSourcePath), region1);
+		// links.putRegion(String.format("%s", videoSourcePath), region2);
+		// links.toLocalFile(videoSourcePath);
 
 		// System.out.println(String.format("read from %s",
 		// String.format("%sAIFilmOne/%s.txt", videoSourcePath, "AIFilmOne")));
