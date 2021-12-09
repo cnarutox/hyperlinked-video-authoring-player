@@ -5,9 +5,11 @@ import java.awt.*;
 import java.util.*;
 
 public class LinkDisplay {
-    Links links = new Links();
 
-    public void draw(String fromFile, Graphics g, int frame) {
-        // ArrayList<Region> regions = links.inRegion(fromFile, frame);
+    public void draw(Region curRegion, Graphics g) {
+        double[] vetexes = curRegion.getVetex(true);
+        g.drawRect((int) vetexes[0], (int) vetexes[1], (int) (vetexes[2] - vetexes[0]),
+                (int) (vetexes[3] - vetexes[1]));
     }
+
 }
