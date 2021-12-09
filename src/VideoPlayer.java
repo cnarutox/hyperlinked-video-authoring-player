@@ -42,11 +42,11 @@ public class VideoPlayer extends JPanel {
 	VideoPlayer that = this;
 
 	public VideoPlayer() {
-		links = new Links();
+		// links = new Links();
 
 		// Region region1 = new Region(33, 33, 66, 77, 600);
-		// region1.setEnd(100, 300, 400, 600, 1000);
-		// region1.setLinkedInfo("AIFilmOne", 654);
+		// region1.setEnd(10, 900, 200, 200, 1000);
+		// // region1.setLinkedInfo("AIFilmOne", 50);
 		// // Region region2 = new Region(10, 10, 200, 200, 20);
 		// // region2.setEnd(110, 110, 210, 210, 2000);
 		// // region2.setLinkedInfo("AIFilmOne", 1000);
