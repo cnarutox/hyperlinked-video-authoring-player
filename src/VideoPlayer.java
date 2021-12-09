@@ -1,5 +1,4 @@
 
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -32,6 +31,8 @@ public class VideoPlayer extends JPanel {
 	int cacheIndex;
 	int soundindex;
 
+	Links links;
+	LinkDisplay linkDisplay;
 
 	// static PlaySound playSound;
 
@@ -41,6 +42,20 @@ public class VideoPlayer extends JPanel {
 	VideoPlayer that = this;
 
 	public VideoPlayer() {
+		links = new Links();
+
+		Region region1 = new Region(10, 10, 20, 20, 10);
+		region1.setEnd(100, 100, 200, 200, 1000);
+		Region region2 = new Region(10, 10, 200, 200, 20);
+		region2.setEnd(110, 110, 210, 210, 2000);
+
+		links.putRegion("C:/Users/16129/OneDrive - University of Southern California/CS576/DS/AIFilmOne", region1);
+		links.putRegion("C:/Users/16129/OneDrive - University of Southern California/CS576/DS/AIFilmOne", region2);
+		// System.out.println("links: " + links.linkedMap.get("C:/Users/16129/OneDrive -
+		// University of Southern
+		// California/CS576/DS/AIFilmOne").get(0).getVetex(true)[0]);
+		linkDisplay = new LinkDisplay();
+		links.toLocalFile("C:/Users/16129/OneDrive - University of Southern California/CS576/DS/links.txt");
 	}
 
 	public VideoPlayer(Authoring.ImportVideo importPanel) {
@@ -88,42 +103,21 @@ public class VideoPlayer extends JPanel {
 
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(frameImg, 0, 0, this);
+
+		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
+				"C:/Users/16129/OneDrive - University of Southern California/CS576/DS/AIFilmOne", currentFrame);
+		System.out.println(regions.size());
+		if (regions.size() > 0) {
+
+			for (Iterator<Region> it = regions.iterator(); it.hasNext();) {
+				Region curRegion = (Region) it.next();
+
+				linkDisplay.draw(curRegion, g2);
+			}
+		}
 		// g2.drawRect(13, 56, 200, 100);
 		// g2.drawImage(bi, null, 0, 0);
 	}
-
-	// class TimePrinter implements ActionListener {
-	// private VideoPlayer frame;
-
-	// TimePrinter(VideoPlayer frame) {
-	// this.frame = frame;
-	// }
-
-	// public void actionPerformed(ActionEvent event) {
-	// synchronized (cache) {
-
-	// if (currentFrame < filelength && !isPaused) {
-	// // Starts the music :P
-
-	// // String imgPath = "DS/AIFilmOne/" + files[currentFrame];
-	// // // System.out.println(imgPath);
-
-	// // readImageRGB(width, height, imgPath, BI);
-
-	// // System.out.println(currentFrame + " " + cache.keySet());
-	// // System.out.println(t.isAlive());
-	// System.out.println(currentFrame + " " + cache.size());
-
-	// System.out.println(System.currentTimeMillis());
-	// this.frame.bi = cache.get(currentFrame);
-	// this.frame.repaint();
-
-	// currentFrame += 1;
-	// slider.setValue(currentFrame + 1);
-	// }
-	// }
-	// }
-	// }
 
 	public class PlayWaveException extends Exception {
 
@@ -238,7 +232,7 @@ public class VideoPlayer extends JPanel {
 	}
 
 	public void importVideo(Authoring.ImportVideo importPanel) {
-		
+
 		File videoPath = importPanel.videoFile;
 		Sound audio = new Sound(
 				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
@@ -350,7 +344,7 @@ public class VideoPlayer extends JPanel {
 			isPaused = true;
 			audio.stop();
 			currentFrame = source.getValue() - 1;
-			
+
 			if (cache.containsKey(currentFrame)) {
 				that.frameImg = cache.get(currentFrame);
 			} else {

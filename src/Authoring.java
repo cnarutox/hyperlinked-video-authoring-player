@@ -32,9 +32,9 @@ public class Authoring extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser fc = new JFileChooser(
-                            "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/DS/AIFilmOne");
+                            "C:/Users/16129/OneDrive - University of Southern California/CS576/DS/AIFilmOne");
                     fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int val = fc.showOpenDialog(null); 
+                    int val = fc.showOpenDialog(null);
                     if (val == JFileChooser.APPROVE_OPTION) {
                         videoFile = fc.getSelectedFile();
                         System.out.println(videoFile);
@@ -50,18 +50,16 @@ public class Authoring extends JFrame {
     }
 
     public static void main(String[] args) {
+
         Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
         authoring.setLayout(new BorderLayout());
 
         ImportVideo importPanel = new ImportVideo();
         authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
 
-
         VideoPlayer videoPlayer = new VideoPlayer();
-        
-        
-        authoring.getContentPane().add(videoPlayer, BorderLayout.SOUTH);
-        
+
+        authoring.getContentPane().add(videoPlayer, BorderLayout.CENTER);
 
         JLabel frameLabel = new JLabel("0", JLabel.CENTER);
         JSlider slider = new JSlider(1, 9000);
