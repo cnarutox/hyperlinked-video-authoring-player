@@ -35,6 +35,8 @@ public class VideoPlayer extends JPanel {
 	LinkDisplay linkDisplay;
 	Sound audio;
 
+	static JTextField mainVideoName = new JTextField(10);
+
 	// static PlaySound playSound;
 
 	BufferedImage frameImg;
@@ -226,9 +228,12 @@ public class VideoPlayer extends JPanel {
 		this.videoPath = videoPath;
 		System.out.println("importVideo " + videoPath);
 		links.fromFile = videoPath.getAbsolutePath();
+		links.linkedMap.clear();
+		mainVideoName.setText(videoPath.getName());
 		isPaused = true;
 		beforeDragStatus = true;
 		cache.clear();
+
 		lastStartTime = 0;
 		if (linkCreate != null) {
 			linkCreate.createBtn.setEnabled(true);
@@ -258,6 +263,10 @@ public class VideoPlayer extends JPanel {
 			frameImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
 		frameImg = readImageRGB(width, height, videoPath.getAbsolutePath() + "/" + files[currentFrame], frameImg);
 		repaint();
+		if (Authoring.authoring == null) {
+			links.readLocalFile(
+					String.format("%s/%s.txt", videoPath.getAbsolutePath(), videoPath.getName()));
+		}
 	}
 
 	class LRUCache extends LinkedHashMap<Integer, BufferedImage> {
@@ -288,15 +297,13 @@ public class VideoPlayer extends JPanel {
 
 		// VideoPlayer VP = new VideoPlayer();
 		Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
-		// Authoring.ImportVideo importPanel = new Authoring.ImportVideo();
-		// authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
 		JPanel mainVideo = authoring.createVideoArea();
 		authoring.add(mainVideo);
 
 		VideoPlayer mainVideoPlayer = (VideoPlayer) mainVideo.getComponent(0);
 
 		JPanel importVideoPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));
-		JTextField mainVideoName = new JTextField(10);
+
 		JButton mainBtn = new JButton("Import Video");
 
 		mainBtn.addActionListener(new ActionListener() {
@@ -313,8 +320,9 @@ public class VideoPlayer extends JPanel {
 					mainVideoPlayer.importVideo(videoFile, 0);
 					System.out.println("readLocalFile: "
 							+ String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
-					mainVideoPlayer.links.readLocalFile(
-							String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
+					// mainVideoPlayer.links.readLocalFile(
+					// String.format("%s/%s.txt", videoFile.getAbsolutePath(),
+					// videoFile.getName()));
 					System.out.println(mainVideoPlayer.links);
 					// System.out.println(mainVideoPlayer.links.getKeySet());
 					// for (String key : mainVideoPlayer.links.getKeySet()) {

@@ -76,7 +76,7 @@ public class Region {
 
     @Override
     public String toString() {
-        return String.format("%s->%s linked to: [%s](%d)", this.startBound.toString(), this.endBound.toString(),
+        return String.format("%s->%s linked to: [%s](%d)\n", this.startBound.toString(), this.endBound.toString(),
                 this.linkedFile, this.linkedFrame);
     }
 

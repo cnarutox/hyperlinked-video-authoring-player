@@ -68,13 +68,14 @@ public class Links {
 
     public void readLocalFile(String localFilePath) {
         BufferedReader br = null;
+        
         try {
             File file = new File(localFilePath);
             br = new BufferedReader(new FileReader(file));
             String line;
-
+            
             int index = 0;
-            Region curRegion;
+            Region curRegion = new Region();
             String fromFilePath = "";
             while ((line = br.readLine()) != null) {
                 if (index == 0) {
@@ -82,22 +83,22 @@ public class Links {
                 } else {
                     String[] info = line.split("\\?", -2);
                     if (info.length != 4) {
-                        System.out.println(String.format(
-                                "Error: readLocalFile file format mismatch. Index(%d) SplitBy(?) Length != 4", index));
+                        // System.out.println(String.format(
+                        //         "Error: readLocalFile file format mismatch. Index(%d) SplitBy(?) Length != 4", index));
                         continue;
                     }
                     String[] firstInfo = info[0].split(",", -2);
                     if (firstInfo.length != 5) {
-                        System.out.println(String.format(
-                                "Error: readLocalFile file format mismatch. Index(%d) SplitBy(,) Length != 5", index));
+                        // System.out.println(String.format(
+                        //         "Error: readLocalFile file format mismatch. Index(%d) SplitBy(,) Length != 5", index));
                         continue;
                     }
                     curRegion = new Region(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]),
                             Double.valueOf(firstInfo[2]), Double.valueOf(firstInfo[3]), Integer.valueOf(firstInfo[4]));
                     firstInfo = info[1].split(",", -2);
                     if (firstInfo.length != 5) {
-                        System.out.println(String.format(
-                                "Error: readLocalFile file format mismatch. Index(%d) SplitBy(,) Length != 5", index));
+                        // System.out.println(String.format(
+                        //         "Error: readLocalFile file format mismatch. Index(%d) SplitBy(,) Length != 5", index));
                         continue;
                     }
                     curRegion.setEnd(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]),

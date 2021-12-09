@@ -193,7 +193,7 @@ public class LinkCreate {
                 operationInfo.setText("You can create hyperlink for them");
                 operationInfo.setForeground(Color.GRAY);
                 mainVideoPlayer.links.linkedMap.get(mainVideoPlayer.videoPath.getAbsolutePath()).get(regionIndex)
-                        .setLinkedInfo(mainVideoPlayer.videoPath.getAbsolutePath(),
+                        .setLinkedInfo(Authoring.secondVideoPlayer.videoPath.getAbsolutePath(),
                                 Authoring.secondVideoPlayer.currentFrame);
                 regionIndex = -1;
                 mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath);

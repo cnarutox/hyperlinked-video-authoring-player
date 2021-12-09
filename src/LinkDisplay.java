@@ -17,8 +17,13 @@ public class LinkDisplay {
         MouseInputAdapter input = new MouseInputAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // System.out.println("mousePressed " + e.getPoint());
+                System.out.println("mousePressed " + e.getPoint());
                 mouseClicked = e.getPoint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // System.out.println("mouseReleased ");
                 if (videoPlayer.filelength > 0 && videoPlayer.isPaused) {
                     // import if clicked in ROI
                     ArrayList<Region> regions = getInRegions(videoPlayer.videoPath.getAbsolutePath(),
@@ -29,14 +34,10 @@ public class LinkDisplay {
                             videoPlayer.isPaused = true;
                             videoPlayer.audio.stop();
                             videoPlayer.importVideo(new File(curRegion.getLinkedFile()), curRegion.getLinkedFrame());
+                            break;
                         }
                     }
                 }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // System.out.println("mouseReleased ");
                 mouseClicked = new Point(-1, -1);
             }
         };
