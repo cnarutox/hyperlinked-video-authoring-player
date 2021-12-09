@@ -118,17 +118,16 @@ public class Links {
         }
     }
 
-    public void toLocalFile(String localFilePath) {
-        File curFile = new File(localFilePath);
+    public void toLocalFile(File curFile) {
         if (!curFile.exists() || !curFile.isDirectory()) {
             System.out.println("Error: toLocalFile() localFilePath not legal.");
             return;
         }
-        File file = new File(localFilePath + File.separator + localFilePath.split(File.separator)[-1] + ".txt");
-        System.out.println("toLocalFile: " + file.getName());
+        File file = new File(curFile.getAbsolutePath() + File.separator + curFile.getName() + ".txt");
+        System.out.println("toLocalFile: " + file.getAbsolutePath());
         BufferedWriter bf = null;
         try {
-            bf = new BufferedWriter(new FileWriter(localFilePath));
+            bf = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
             for (Map.Entry<String, List<Region>> entry : this.linkedMap.entrySet()) {
 
                 // put key and value separated by a colon

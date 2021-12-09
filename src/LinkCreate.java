@@ -1,7 +1,10 @@
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.text.CollationElementIterator;
+import java.util.List;
 import java.awt.*;
 
+import javax.naming.ldap.ManageReferralControl;
 import javax.swing.*;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
@@ -115,8 +118,33 @@ public class LinkCreate {
         linksList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         linksList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         scrollPane.setViewportView(linksList);
+        linksList.addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting() == false) {
+                if (linksList.getSelectedIndex() == -1) {
+                    // No selection, disable fire button.
+                } else {
+                    // System.out.println("Select " + linksList.getSelectedValue());
+                    Region region = mainVideoPlayer.links
+                            .getItems(mainVideoPlayer.videoPath.getAbsolutePath()).get(
+                                    Integer.valueOf(((String) linksList.getSelectedValue())
+                                            .split("\\.")[0]));
+                    mainVideoPlayer.currentFrame = region.startBound.frame;
+                    mainVideoPlayer.cacheIndex = mainVideoPlayer.currentFrame;
+                    mainVideoPlayer.currentTotalTime = (long) (mainVideoPlayer.currentFrame * ((double) 1000 / 30));
+                    mainVideoPlayer.slider.setValue(mainVideoPlayer.currentFrame + 1);
+                    mainVideoPlayer.isPaused = true;
+                    mainVideoPlayer.audio.stop();
+                    mainVideoPlayer.repaint();
 
-        JPanel center = new JPanel(new BorderLayout());
+                    int idx = Authoring.ImportVideo.listModel.indexOf(region.getLinkedFile());
+                    Authoring.ImportVideo.list.setSelectedIndex(idx);
+                    Authoring.secondVideoPlayer.currentFrame = region.linkedFrame;
+                }
+            }
+        });
+
+        JPanel center = new JPanel(
+                new BorderLayout());
         center.add(linkInfo, BorderLayout.NORTH);
         center.add(scrollPane, BorderLayout.CENTER);
         linkPanel.add(center, BorderLayout.CENTER);
@@ -158,12 +186,17 @@ public class LinkCreate {
                     return;
                 }
                 Authoring.isCreating = false;
-                dataModel.addElement(newLinkName.getText());
+                dataModel.addElement(regionIndex + "." + newLinkName.getText());
                 createBtn.setText("Create Link");
                 newLinkName.setText("");
+                linkInfo.setText("No link selected");
                 operationInfo.setText("You can create hyperlink for them");
                 operationInfo.setForeground(Color.GRAY);
-                mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath.getAbsolutePath());
+                mainVideoPlayer.links.linkedMap.get(mainVideoPlayer.videoPath.getAbsolutePath()).get(regionIndex)
+                        .setLinkedInfo(mainVideoPlayer.videoPath.getAbsolutePath(),
+                                Authoring.secondVideoPlayer.currentFrame);
+                regionIndex = -1;
+                mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath);
             }
         });
         saveBtn.setEnabled(false);

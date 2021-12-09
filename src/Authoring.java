@@ -14,9 +14,10 @@ import java.util.HashMap;
 
 public class Authoring extends JFrame {
 
-    static Authoring authoring;
+    public static Authoring authoring;
     static boolean isCreating = false;
     static VideoPlayer mainVideoPlayer, secondVideoPlayer;
+    static ImportVideo importPanel = new ImportVideo();
 
     public Authoring(String s) {
         super(s);
@@ -27,10 +28,11 @@ public class Authoring extends JFrame {
         JTextField mainVideoName = new JTextField(10);
         JButton mainBtn = new JButton("Import Main Video");
         JButton secondBtn = new JButton("Import Linked Video");
-        DefaultListModel listModel = new DefaultListModel();
+        static DefaultListModel listModel = new DefaultListModel();
+        static JList list = new JList(listModel);
         JScrollPane scrollPane = new JScrollPane();
 
-        HashMap<String, File> videofiles = new HashMap<String, File>();
+        static HashMap<String, File> videofiles = new HashMap<String, File>();
 
         public ImportVideo() {
             super(new FlowLayout(FlowLayout.LEADING, 10, 5));
@@ -40,7 +42,6 @@ public class Authoring extends JFrame {
             add(secondBtn);
             add(scrollPane);
 
-            JList list = new JList(listModel);
             list.setVisibleRowCount(2);
             list.setLayoutOrientation(JList.VERTICAL_WRAP);
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -140,7 +141,6 @@ public class Authoring extends JFrame {
         authoring = new Authoring("HyperLinked Video Authoring Tool");
         authoring.setLayout(new BorderLayout());
 
-        ImportVideo importPanel = new ImportVideo();
         authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
 
         JPanel mainArea = authoring.createVideoArea();

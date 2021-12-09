@@ -45,7 +45,7 @@ public class VideoPlayer extends JPanel {
 
 	public VideoPlayer() {
 		links = new Links();
-		
+
 		// String videoSourcePath = videoPath.getAbsolutePath();
 
 		// Region region1 = new Region(10, 10, 20, 20, 10);
