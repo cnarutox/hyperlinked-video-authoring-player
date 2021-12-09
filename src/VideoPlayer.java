@@ -30,6 +30,7 @@ public class VideoPlayer extends JPanel {
 	int soundindex;
 	Timer timer = new Timer();
 	File videoPath;
+
 	Links links;
 	LinkDisplay linkDisplay;
 	Sound audio;
@@ -44,20 +45,32 @@ public class VideoPlayer extends JPanel {
 
 	public VideoPlayer() {
 		links = new Links();
+		// String videoSourcePath = "C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/";
 
-		Region region1 = new Region(10, 10, 20, 20, 10);
-		region1.setEnd(100, 100, 200, 200, 1000);
-		Region region2 = new Region(10, 10, 200, 200, 20);
-		region2.setEnd(110, 110, 210, 210, 2000);
+		// Region region1 = new Region(10, 10, 20, 20, 10);
+		// region1.setEnd(100, 100, 200, 200, 1000);
+		// region1.setLinkedInfo(String.format("%sAIFilmTwo", videoSourcePath), 50);
+		// Region region2 = new Region(100, 100, 200, 200, 20);
+		// region2.setEnd(10, 10, 20, 20, 2000);
+		// region2.setLinkedInfo(String.format("%sAIFilmTwo", videoSourcePath), 1000);
 
-		// links.putRegion("C:/Users/16129/OneDrive - University of Southern
-		// California/CS576/DS/AIFilmOne", region1);
-		// links.putRegion("C:/Users/16129/OneDrive - University of Southern
-		// California/CS576/DS/AIFilmOne", region2);
+		// links.putRegion(String.format("%sAIFilmOne", videoSourcePath), region1);
+		// links.putRegion(String.format("%sAIFilmOne", videoSourcePath), region2);
+		// links.toLocalFile(String.format("%sAIFilmOne/%s.txt", videoSourcePath,
+		// "AIFilmOne"));
+
+		// System.out.println(String.format("read from %s",
+		// String.format("%sAIFilmOne/%s.txt", videoSourcePath, "AIFilmOne")));
+
+		// links.readLocalFile(String.format("%sAIFilmOne/%s.txt", videoSourcePath, "AIFilmOne"));
+		// for (String key : links.getKeySet()) {
+		// 	for (Region region : links.getItems(key)) {
+		// 		System.out.println(region);
+		// 	}
+		// }
+
 		linkDisplay = new LinkDisplay();
 		linkCreate = new LinkCreate(this);
-		// links.toLocalFile("C:/Users/16129/OneDrive - University of Southern
-		// California/CS576/DS/links.txt");
 
 		t = new Thread(new Runnable() {
 			public void run() {
@@ -94,10 +107,13 @@ public class VideoPlayer extends JPanel {
 				if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
 					currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime) / 1000) * 30;
 				}
+				// System.out.println("repaint ");
+				// System.out.println(links);
 				synchronized (cache) {
 					if (cache.containsKey(currentFrame)) {
 						that.frameImg = cache.get(currentFrame);
 						that.repaint();
+						
 						currentFrame += 1;
 						slider.setValue(currentFrame + 1);
 						return;
@@ -131,6 +147,8 @@ public class VideoPlayer extends JPanel {
 		g2.drawImage(frameImg, 5, 5, this);
 		if (linkCreate.isDrawing)
 			linkCreate.draw(g2);
+		// System.out.println(links);
+		
 		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
 				videoPath.getAbsolutePath(), currentFrame);
 		for (Region region : regions) {
@@ -163,15 +181,17 @@ public class VideoPlayer extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
+				// System.out.println("mousePressed");
 				beforeDragStatus = isPaused;
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
+				// System.out.println("mouseReleased");
 				cacheIndex = currentFrame;
+				currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
 				if (!beforeDragStatus) {
-					currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
 					audio.play(currentTotalTime);
 					lastStartTime = System.currentTimeMillis();
 				}
@@ -209,11 +229,13 @@ public class VideoPlayer extends JPanel {
 
 	public void importVideo(File videoPath) {
 		this.videoPath = videoPath;
+		System.out.println("importVideo " + videoPath);
 		isPaused = true;
 		beforeDragStatus = true;
 		currentFrame = 0;
 		cacheIndex = 0;
 		lastStartTime = 0;
+		currentTotalTime = 0;
 		cache.clear();
 		slider.setValue(1);
 		if (audio != null)
@@ -264,7 +286,54 @@ public class VideoPlayer extends JPanel {
 
 	public static void main(String[] args) {
 
-		VideoPlayer VP = new VideoPlayer();
+		// VideoPlayer VP = new VideoPlayer();
+		Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
+		// Authoring.ImportVideo importPanel = new Authoring.ImportVideo();
+		// authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
+		JPanel mainVideo = authoring.createVideoPlayer();
+		authoring.add(mainVideo);
+
+		VideoPlayer mainVideoPlayer = (VideoPlayer)mainVideo.getComponent(0);
+
+		JPanel importVideoPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));
+		JTextField mainVideoName = new JTextField(10);
+		JButton mainBtn = new JButton("Import Video");
+
+		mainBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int val = fc.showOpenDialog(null);
+				if (val == JFileChooser.APPROVE_OPTION) {
+					File videoFile = fc.getSelectedFile();
+					mainVideoName.setText(videoFile.getName());
+					mainVideoPlayer.importVideo(videoFile);
+					System.out.println("readLocalFile: " + String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
+					mainVideoPlayer.links.readLocalFile(String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
+					System.out.println(mainVideoPlayer.links);
+					// System.out.println(mainVideoPlayer.links.getKeySet());
+					// for (String key : mainVideoPlayer.links.getKeySet()) {
+					// 	for (Region region : mainVideoPlayer.links.getItems(key)) {
+					// 		System.out.println(region);
+					// 	}
+					// }
+				} else {
+					// videoName.setText("file not selected");
+				}
+			}
+		});
+		importVideoPanel.add(mainVideoName);
+		importVideoPanel.add(mainBtn);
+		authoring.getContentPane().add(importVideoPanel, BorderLayout.NORTH);
+
+		authoring.pack();
+		authoring.setVisible(true);
+		authoring.setPreferredSize(new Dimension(720, 480));
+		authoring.setLocationRelativeTo(null);
+		authoring.setDefaultCloseOperation(3);
 	}
 
 	public class Sound {
@@ -349,3 +418,4 @@ public class VideoPlayer extends JPanel {
 	}
 
 }
+

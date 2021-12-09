@@ -142,6 +142,7 @@ public class Authoring extends JFrame {
 
         JPanel mainVideo = authoring.createVideoPlayer();
         importPanel.mainPlayer = (VideoPlayer) mainVideo.getComponent(0);
+        
         authoring.add(mainVideo, BorderLayout.WEST);
 
         JPanel secondVideo = authoring.createVideoPlayer();
