@@ -19,7 +19,7 @@ public class VideoPlayer extends JPanel {
 	BufferedImage frameN;
 	int currentFrame = 0;
 	String[] files;
-	Boolean isPaused = true;
+	boolean isPaused = true;
 
 	boolean firstStart = true;
 	long startTime;
@@ -131,9 +131,8 @@ public class VideoPlayer extends JPanel {
 			return;
 		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
 				videoPath.getAbsolutePath(), currentFrame);
-		for (Iterator<Region> it = regions.iterator(); it.hasNext();) {
-			Region curRegion = (Region) it.next();
-			linkDisplay.draw(curRegion, g2);
+		for (Region region : regions) {
+			linkDisplay.draw(region, g2);
 		}
 	}
 

@@ -141,6 +141,7 @@ public class Authoring extends JFrame {
         authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
 
         JPanel mainVideo = authoring.createVideoPlayer();
+        new LinkCreate((VideoPlayer) mainVideo.getComponent(0));
         importPanel.mainPlayer = (VideoPlayer) mainVideo.getComponent(0);
         authoring.add(mainVideo, BorderLayout.WEST);
 
