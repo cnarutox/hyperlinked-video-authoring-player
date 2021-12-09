@@ -18,7 +18,6 @@ public class VideoPlayer extends JPanel {
 	int height = 288;
 	BufferedImage frameN;
 	int currentFrame = 0;
-	BufferedImage BI;
 	String[] files;
 	Boolean isPaused = true;
 
@@ -26,13 +25,15 @@ public class VideoPlayer extends JPanel {
 	long startTime;
 	long currentTotalTime = 0;
 	long lastStartTime;
-	int filelength = 9000;
+	int filelength = 0;
 	JSlider slider;
-	int cacheIndex;
+	int cacheIndex = 0;
 	int soundindex;
-
+	Timer timer = new Timer();
+	File videoPath;
 	Links links;
 	LinkDisplay linkDisplay;
+	Sound audio;
 
 	// static PlaySound playSound;
 
@@ -56,10 +57,190 @@ public class VideoPlayer extends JPanel {
 		linkDisplay = new LinkDisplay();
 		// links.toLocalFile("C:/Users/16129/OneDrive - University of Southern
 		// California/CS576/DS/links.txt");
+
+		t = new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					// System.out.println(currentFrame + " " + cache.size());
+					if (cacheIndex >= filelength) {
+						continue;
+					}
+					synchronized (cache) {
+						int first = cache.keySet().iterator().next();
+						if (cache.size() > 0 && currentFrame - 150 > first) {
+							cache.remove(first);
+						}
+					}
+					if (currentFrame + 150 > cacheIndex) {
+						synchronized (cache) {
+							if (!cache.containsKey(cacheIndex)) {
+								String imgPath = videoPath.getAbsolutePath() + "/" + files[cacheIndex];
+								readImageRGB(width, height, imgPath, that.frameImg);
+								cache.put(cacheIndex, that.frameImg);
+							}
+						}
+						cacheIndex += 1;
+					}
+				}
+			}
+		});
+		t.start();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				if (currentFrame >= filelength || isPaused)
+					return;
+				long currentTime = System.currentTimeMillis();
+				if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
+					currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime) / 1000) * 30;
+				}
+				synchronized (cache) {
+					if (cache.containsKey(currentFrame)) {
+						that.frameImg = cache.get(currentFrame);
+						that.repaint();
+						currentFrame += 1;
+						slider.setValue(currentFrame + 1);
+						return;
+					}
+				}
+				that.frameImg = readImageRGB(width, height, videoPath.getAbsolutePath() + "/" + files[currentFrame],
+						that.frameImg);
+				that.repaint();
+				currentFrame += 1;
+				slider.setValue(currentFrame + 1);
+			}
+		}, 0, 1000 / 30);
 	}
 
-	public VideoPlayer(Authoring.ImportVideo importPanel) {
-		importPanel.mainPlayer = this;
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(width + 10, height + 10);
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		// System.out.println("paintComponent");
+
+		Graphics2D g2 = (Graphics2D) g;
+		g2.drawImage(frameImg, 5, 5, this);
+
+		// ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
+		// "C:/Users/16129/OneDrive - University of Southern
+		// California/CS576/DS/AIFilmOne", currentFrame);
+		// System.out.println(regions.size());
+		// if (regions.size() > 0) {
+
+		// for (Iterator<Region> it = regions.iterator(); it.hasNext();) {
+		// Region curRegion = (Region) it.next();
+
+		// linkDisplay.draw(curRegion, g2);
+		// }
+		// }
+	}
+
+	boolean beforeDragStatus = false;
+	JButton btnPause = new JButton("Pause");
+	JButton btnPlay = new JButton("Play");
+	JTextField yourInputField = new JTextField(16);
+	JButton bSelect = new JButton("Select");
+	JLabel frameLabel;
+
+	public void binding(JSlider jSlider, JButton play, JButton pause, JLabel label) {
+		slider = jSlider;
+		btnPlay = play;
+		btnPause = pause;
+		frameLabel = label;
+		btnPause.addActionListener(e -> {
+			if (filelength == 0)
+				return;
+			if (!isPaused) {
+				currentTotalTime += System.currentTimeMillis() - lastStartTime;
+			}
+			isPaused = true;
+			audio.stop();
+		});
+		slider.addMouseListener(new MouseInputAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				beforeDragStatus = isPaused;
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				cacheIndex = currentFrame;
+				if (!beforeDragStatus) {
+					currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
+					audio.play(currentTotalTime);
+					lastStartTime = System.currentTimeMillis();
+				}
+				isPaused = beforeDragStatus;
+			}
+		});
+		slider.addChangeListener(e -> {
+			// TODO Auto-generated method stub
+			JSlider source = (JSlider) e.getSource();
+			frameLabel.setText(String.valueOf(currentFrame));
+			if (!source.getValueIsAdjusting() || audio == null || videoPath == null) {
+				return;
+			}
+			isPaused = true;
+			audio.stop();
+			currentFrame = source.getValue() - 1;
+			if (cache.containsKey(currentFrame)) {
+				that.frameImg = cache.get(currentFrame);
+			} else {
+				String imgPath = videoPath.getAbsolutePath() + "/" + files[currentFrame];
+				that.frameImg = readImageRGB(width, height, imgPath, that.frameImg);
+			}
+			that.repaint();
+		});
+		btnPlay.addActionListener(e -> {
+			if (videoPath == null)
+				return;
+			if (isPaused) {
+				lastStartTime = System.currentTimeMillis();
+				audio.play(currentTotalTime);
+			}
+			isPaused = false;
+		});
+	}
+
+	public void importVideo(File videoPath) {
+		this.videoPath = videoPath;
+		isPaused = true;
+		beforeDragStatus = true;
+		currentFrame = 0;
+		cacheIndex = 0;
+		lastStartTime = 0;
+		cache.clear();
+		slider.setValue(1);
+		if (audio != null)
+			audio.stop();
+
+		audio = new Sound(
+				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
+
+		int index = 0;
+		files = new String[videoPath.listFiles().length];
+		for (final File fileEntry : videoPath.listFiles()) {
+			if (fileEntry.getName().endsWith(".rgb")) {
+				files[index] = fileEntry.getName();
+				index += 1;
+			}
+		}
+		filelength = index;
+		slider.setMaximum(filelength);
+		if (frameImg == null)
+			frameImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
+		frameImg = readImageRGB(width, height, videoPath.getAbsolutePath() + "/" + files[0], frameImg);
+		repaint();
 	}
 
 	class LRUCache extends LinkedHashMap<Integer, BufferedImage> {
@@ -86,52 +267,9 @@ public class VideoPlayer extends JPanel {
 
 	LRUCache cache = new LRUCache(300);
 
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-	}
+	public static void main(String[] args) {
 
-	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(2 * width, 2 * height);
-	}
-
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		// System.out.println("paintComponent");
-
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(frameImg, 0, 0, this);
-
-		// ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
-		// "C:/Users/16129/OneDrive - University of Southern
-		// California/CS576/DS/AIFilmOne", currentFrame);
-		// System.out.println(regions.size());
-		// if (regions.size() > 0) {
-
-		// for (Iterator<Region> it = regions.iterator(); it.hasNext();) {
-		// Region curRegion = (Region) it.next();
-
-		// linkDisplay.draw(curRegion, g2);
-		// }
-		// }
-	}
-
-	public class PlayWaveException extends Exception {
-
-		public PlayWaveException(String message) {
-			super(message);
-		}
-
-		public PlayWaveException(Throwable cause) {
-			super(cause);
-		}
-
-		public PlayWaveException(String message, Throwable cause) {
-			super(message, cause);
-		}
-
+		VideoPlayer VP = new VideoPlayer();
 	}
 
 	public class Sound {
@@ -215,153 +353,4 @@ public class VideoPlayer extends JPanel {
 		return img;
 	}
 
-	boolean beforeDragStatus = false;
-	JButton btnPause = new JButton("Pause");
-	JButton btnPlay = new JButton("Play");
-	JTextField yourInputField = new JTextField(16);
-	JButton bSelect = new JButton("Select");
-	JLabel frameLabel;
-
-	public void binding(JSlider jSlider, JButton play, JButton pause, JLabel label) {
-		slider = jSlider;
-		btnPlay = play;
-		btnPause = pause;
-		frameLabel = label;
-	}
-
-	public void importVideo(File videoPath) {
-		Sound audio = new Sound(
-				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
-		cacheIndex = 0;
-
-		int index = 0;
-		files = new String[videoPath.listFiles().length];
-		for (final File fileEntry : videoPath.listFiles()) {
-			if (fileEntry.getName().endsWith(".rgb")) {
-				files[index] = fileEntry.getName();
-				index += 1;
-			}
-		}
-		filelength = index;
-		slider.setMaximum(filelength);
-		System.out.println("Loaded " + videoPath);
-
-		BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		t = new Thread(new Runnable() {
-			public void run() {
-				while (true) {
-					// System.out.println(currentFrame + " " + cache.size());
-					if (cacheIndex >= filelength) {
-						continue;
-					}
-					synchronized (cache) {
-						if (cache.size() > 0 && currentFrame - 150 > cache.keySet().iterator().next()) {
-							cache.remove(cache.keySet().iterator().next());
-						}
-					}
-					if (currentFrame + 150 > cacheIndex) {
-						synchronized (cache) {
-							if (!cache.containsKey(cacheIndex)) {
-
-								String imgPath = videoPath.getAbsolutePath() + "/" + files[cacheIndex];
-								BI = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-								readImageRGB(width, height, imgPath, BI);
-								cache.put(cacheIndex, BI);
-							}
-						}
-						cacheIndex += 1;
-					}
-				}
-			}
-		});
-		t.start();
-
-		// frame.setLayout(new BoxLayout(frame, BoxLayout.PAGE_AXIS));
-
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-			public void run() {
-				synchronized (cache) {
-					if (currentFrame < filelength && !isPaused) {
-						long currentTime = System.currentTimeMillis();
-						if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
-							currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime)
-									/ 1000) * 30;
-						}
-						if (cache.containsKey(currentFrame)) {
-							that.frameImg = cache.get(currentFrame);
-						} else {
-							that.frameImg = readImageRGB(width, height,
-									videoPath.getAbsolutePath() + "/" + files[currentFrame], BI);
-						}
-						that.repaint();
-						currentFrame += 1;
-						slider.setValue(currentFrame + 1);
-					}
-				}
-			}
-		}, 0, 1000 / 30);
-
-		btnPause.addActionListener(e -> {
-			if (!isPaused) {
-				currentTotalTime += System.currentTimeMillis() - lastStartTime;
-			}
-			isPaused = true;
-			audio.stop();
-		});
-		slider.addMouseListener(new MouseInputAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				beforeDragStatus = isPaused;
-				System.out.println("pressed " + isPaused);
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				cacheIndex = currentFrame;
-				if (!beforeDragStatus) {
-					currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
-					audio.play(currentTotalTime);
-					lastStartTime = System.currentTimeMillis();
-				}
-				isPaused = beforeDragStatus;
-				System.out.println("release " + isPaused);
-			}
-		});
-		slider.addChangeListener(e -> {
-			// TODO Auto-generated method stub
-			JSlider source = (JSlider) e.getSource();
-			frameLabel.setText(String.valueOf(currentFrame));
-			if (!source.getValueIsAdjusting()) {
-				return;
-			}
-			isPaused = true;
-			audio.stop();
-			currentFrame = source.getValue() - 1;
-
-			if (cache.containsKey(currentFrame)) {
-				that.frameImg = cache.get(currentFrame);
-			} else {
-				String imgPath = videoPath.getAbsolutePath() + "/" + files[currentFrame];
-				that.frameImg = readImageRGB(width, height, imgPath, BI);
-			}
-			that.repaint();
-		});
-		btnPlay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (isPaused) {
-					lastStartTime = System.currentTimeMillis();
-					audio.play(currentTotalTime);
-				}
-				isPaused = false;
-			}
-		});
-	}
-
-	public static void main(String[] args) {
-
-		VideoPlayer VP = new VideoPlayer();
-	}
 }

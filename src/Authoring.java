@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 public class Authoring extends JFrame {
 
@@ -23,6 +24,8 @@ public class Authoring extends JFrame {
         JButton secondBtn = new JButton("Import Linked Video");
         DefaultListModel listModel = new DefaultListModel();
         JScrollPane scrollPane = new JScrollPane();
+
+        HashMap<String, File> videofiles = new HashMap<String, File>();
 
         VideoPlayer mainPlayer, secondPlayer;
 
@@ -68,7 +71,8 @@ public class Authoring extends JFrame {
                         if (list.getSelectedIndex() == -1) {
                             // No selection, disable fire button.
                         } else {
-                            System.out.println("Select" + list.getSelectedValue());
+                            System.out.println("Select " + list.getSelectedValue());
+                            secondPlayer.importVideo(videofiles.get(list.getSelectedValue()));
                         }
                     }
                 }
@@ -82,10 +86,12 @@ public class Authoring extends JFrame {
                     int val = fc.showOpenDialog(null);
                     if (val == JFileChooser.APPROVE_OPTION) {
                         File videoFile = fc.getSelectedFile();
-                        System.out.println("Load Video: " + videoFile);
-                        listModel.addElement(videoFile.getName());
-                        list.setSelectedIndex(listModel.lastIndexOf(listModel.lastElement()));
-                        secondPlayer.importVideo(videoFile);
+                        if (!videofiles.containsKey(videoFile.getName())) {
+                            listModel.addElement(videoFile.getName());
+                            videofiles.put(videoFile.getName(), videoFile);
+                            list.setSelectedIndex(listModel.lastIndexOf(listModel.lastElement()));
+                            System.out.println("Load Video: " + videoFile);
+                        }
                     } else {
                         // videoName.setText("file not selected");
                     }
