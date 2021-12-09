@@ -56,8 +56,12 @@ public class Authoring extends JFrame {
         ImportVideo importPanel = new ImportVideo();
         authoring.getContentPane().add(importPanel, BorderLayout.NORTH);
 
+
         VideoPlayer videoPlayer = new VideoPlayer();
-        authoring.getContentPane().add(videoPlayer, BorderLayout.CENTER);
+        
+        
+        authoring.getContentPane().add(videoPlayer, BorderLayout.SOUTH);
+        
 
         JLabel frameLabel = new JLabel("0", JLabel.CENTER);
         JSlider slider = new JSlider(1, 9000);

@@ -32,6 +32,7 @@ public class VideoPlayer extends JPanel {
 	int cacheIndex;
 	int soundindex;
 
+
 	// static PlaySound playSound;
 
 	BufferedImage frameImg;
@@ -87,6 +88,7 @@ public class VideoPlayer extends JPanel {
 
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(frameImg, 0, 0, this);
+		// g2.drawRect(13, 56, 200, 100);
 		// g2.drawImage(bi, null, 0, 0);
 	}
 
