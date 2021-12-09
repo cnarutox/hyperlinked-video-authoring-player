@@ -21,9 +21,16 @@ public class Region {
             this.frame = frame;
         }
 
+        @Override
+        public String toString(){
+            return String.format("(%.2f, %.2f)(%.2f, %.2f)(%d)", this.xLeftTop, this.yLeftTop, this.xRightBottom, this.yRightBottom, this.frame);
+        }
+        
         public int getFrame() {
             return this.frame;
         }
+
+        
 
         public void resetBound(double xLeftTop, double yLeftTop, double xRightBottom, double yRightBottom) {
             this.xLeftTop = xLeftTop;
@@ -62,13 +69,19 @@ public class Region {
         this.endBound = new Bound(xStartLeftTop, yStartLeftTop, xStartRightBottom, yStartRightBottom, startFrame);
     }
 
+    @Override
+    public String toString(){
+        return String.format("%s->%s linked to: [%s](%d)", this.startBound.toString(), this.endBound.toString(), this.linkedFile, this.linkedFrame);
+    }
+
+    
     public void setEnd(double xEndLeftTop, double yEndLeftTop, double xEndRightBottom, double yEndRightBottom,
             int endFrame) {
         this.endBound.resetBound(xEndLeftTop, yEndLeftTop, xEndRightBottom, yEndRightBottom);
         this.endBound.resetFrame(endFrame);
     }
 
-    public void setLinkedFile(String linkedFile, int linkedFrame) {
+    public void setLinkedInfo(String linkedFile, int linkedFrame) {
         this.linkedFile = linkedFile;
         this.linkedFrame = linkedFrame;
     }
@@ -87,7 +100,16 @@ public class Region {
         double curYRightBottom = this.startBound.yRightBottom
                 + (this.endBound.yRightBottom - this.startBound.yRightBottom)
                         / (this.endBound.frame - this.startBound.frame + 1) * (frame - this.startBound.frame);
-        return new Region(curXLeftTop, curYLeftTop, curXRightBottom, curYRightBottom, frame);
+        Region newRegion = new Region(curXLeftTop, curYLeftTop, curXRightBottom, curYRightBottom, frame);
+        newRegion.setLinkedInfo(this.linkedFile, this.linkedFrame);
+        return newRegion;
+    }
+    public int getLinkedFrame(){
+        return this.linkedFrame;
+    }
+
+    public String getLinkedFile(){
+        return this.linkedFile;
     }
 
     public double[] getVetex(Boolean isStart) {

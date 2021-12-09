@@ -44,18 +44,29 @@ public class VideoPlayer extends JPanel {
 	public VideoPlayer() {
 		links = new Links();
 
-		Region region1 = new Region(10, 10, 20, 20, 10);
-		region1.setEnd(100, 100, 200, 200, 1000);
-		Region region2 = new Region(10, 10, 200, 200, 20);
-		region2.setEnd(110, 110, 210, 210, 2000);
+		// Region region1 = new Region(33, 33, 66, 77, 600);
+		// region1.setEnd(100, 300, 400, 600, 1000);
+		// region1.setLinkedInfo("AIFilmOne", 654);
+		// // Region region2 = new Region(10, 10, 200, 200, 20);
+		// // region2.setEnd(110, 110, 210, 210, 2000);
+		// // region2.setLinkedInfo("AIFilmOne", 1000);
 
-		links.putRegion("C:/Users/16129/OneDrive - University of Southern California/CS576/DS/AIFilmOne", region1);
-		links.putRegion("C:/Users/16129/OneDrive - University of Southern California/CS576/DS/AIFilmOne", region2);
-		// System.out.println("links: " + links.linkedMap.get("C:/Users/16129/OneDrive -
-		// University of Southern
-		// California/CS576/DS/AIFilmOne").get(0).getVetex(true)[0]);
-		linkDisplay = new LinkDisplay();
-		links.toLocalFile("C:/Users/16129/OneDrive - University of Southern California/CS576/DS/links.txt");
+		// links.putRegion("AIFilmOne", region1);
+		// // links.putRegion("AIFilmOne", region2);
+		// // // System.out.println("links: " + links.linkedMap.get("C:/Users/16129/OneDrive -
+		// // // University of Southern
+		// // // California/CS576/DS/AIFilmOne").get(0).getVetex(true)[0]);
+		// // linkDisplay = new LinkDisplay();
+		// // links.toLocalFile("links.txt");
+		// links.readLocalFile("C:/Users/16129/OneDrive - University of Southern California/CS576/CSCI576 - 20213 - Multimedia Systems Design - 1242021 - 354 PM/links.txt");
+		
+		// for (String str: links.getKeySet()){
+		// 	ArrayList<Region> regions = (ArrayList<Region>)links.getItems(str);
+		// 	for (Region r: regions){	
+		// 		System.out.println(r);
+		// 	}
+		// }
+		
 	}
 
 	public VideoPlayer(Authoring.ImportVideo importPanel) {
@@ -105,7 +116,7 @@ public class VideoPlayer extends JPanel {
 		g2.drawImage(frameImg, 0, 0, this);
 
 		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
-				"C:/Users/16129/OneDrive - University of Southern California/CS576/DS/AIFilmOne", currentFrame);
+			"AlFilmOne", currentFrame);
 		System.out.println(regions.size());
 		if (regions.size() > 0) {
 

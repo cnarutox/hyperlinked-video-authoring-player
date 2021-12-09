@@ -1,6 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 import java.io.*;
 
@@ -8,6 +5,13 @@ public class Links {
 
     Map<String, List<Region>> linkedMap = new HashMap<String, List<Region>>();
 
+    public Set<String> getKeySet(){
+        return this.linkedMap.keySet();
+    }
+
+    public List<Region> getItems(String fileName){
+        return this.linkedMap.get(fileName);
+    }
     public void putRegion(String fromFile, Region newRegion) {
         if (this.linkedMap.containsKey(fromFile)) {
             ArrayList<Region> regionList = (ArrayList<Region>) this.linkedMap.get(fromFile);
@@ -34,9 +38,55 @@ public class Links {
             if (curRegion.getBound(frame) != null) {
                 regions.add(curRegion.getBound(frame));
             }
+            
         }
         // System.out.println("inregion " + frame + " " + regions.size());
         return regions;
+    }
+
+    public void readLocalFile(String localFilePath) {
+        BufferedReader br = null;
+        try {
+            File file = new File(localFilePath);
+            br = new BufferedReader(new FileReader(file));
+            String line;
+            
+            int index = 0;
+            Region curRegion;
+            while ((line = br.readLine()) != null) {
+                String fromFilePath = "";
+                if (index == 0){
+                    fromFilePath = line;
+                }
+                else{
+                    String[] info = line.split("-", -2);
+                    if (info.length != 4){
+                        continue;
+                    }
+                    String[] firstInfo = info[0].split(",", -2);
+                    if (firstInfo.length != 5){
+                        continue;
+                    }
+                    curRegion = new Region(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]), Double.valueOf(firstInfo[2]),Double.valueOf(firstInfo[3]), Integer.valueOf(firstInfo[4]));
+                    firstInfo = info[1].split(",", -2);
+                    if (firstInfo.length != 5){
+                        continue;
+                    }
+                    curRegion.setEnd(Double.valueOf(firstInfo[0]), Double.valueOf(firstInfo[1]), Double.valueOf(firstInfo[2]),Double.valueOf(firstInfo[3]), Integer.valueOf(firstInfo[4]));
+                    curRegion.setLinkedInfo(info[2], Integer.valueOf(info[3])); 
+                    putRegion(fromFilePath, curRegion);
+                }
+                index += 1;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void toLocalFile(String localFilePath) {
@@ -61,7 +111,8 @@ public class Links {
                     for (int i = 0; i < 4; i++) {
                         curLine += vetexes[i] + ",";
                     }
-                    curLine += curRegion.endBound.frame + "\n";
+                    curLine += curRegion.endBound.frame + "-";
+                    curLine += curRegion.getLinkedFile() + "-" + curRegion.getLinkedFrame() + "\n";
                 }
                 bf.write(entry.getKey() + "\n"
                         + curLine);
