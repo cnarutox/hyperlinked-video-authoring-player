@@ -1,6 +1,7 @@
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.text.CollationElementIterator;
+import java.util.Arrays;
 import java.util.List;
 import java.awt.*;
 
@@ -135,10 +136,17 @@ public class LinkCreate {
                     mainVideoPlayer.isPaused = true;
                     mainVideoPlayer.audio.stop();
                     mainVideoPlayer.repaint();
+                    mainVideoPlayer.slider.setValue(mainVideoPlayer.currentFrame - 1);
 
                     int idx = Authoring.ImportVideo.listModel.indexOf(region.getLinkedFile());
+                    Arrays.asList(Authoring.ImportVideo.listModel.toArray()).indexOf((Object) region.getLinkedFile());
+                    // Arrays.
+                    // System.out.println(idx + " " +
+                    // Authoring.ImportVideo.list.getSelectedValue());
                     Authoring.ImportVideo.list.setSelectedIndex(idx);
                     Authoring.secondVideoPlayer.currentFrame = region.linkedFrame;
+                    Authoring.secondVideoPlayer.slider.setValue(region.linkedFrame);
+                    Authoring.secondVideoPlayer.repaint();
                 }
             }
         });
@@ -196,7 +204,6 @@ public class LinkCreate {
                         .setLinkedInfo(Authoring.secondVideoPlayer.videoPath.getAbsolutePath(),
                                 Authoring.secondVideoPlayer.currentFrame);
                 regionIndex = -1;
-                mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath);
             }
         });
         saveBtn.setEnabled(false);
