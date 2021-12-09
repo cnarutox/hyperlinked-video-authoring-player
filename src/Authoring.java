@@ -18,8 +18,8 @@ public class Authoring extends JFrame {
     }
 
     public static class ImportVideo extends JPanel {
-        JLabel label = new JLabel("Main Vieo Path");
-        JTextField mainVideoName = new JTextField(20);
+        JLabel label = new JLabel("Main Video");
+        JTextField mainVideoName = new JTextField(10);
         JButton mainBtn = new JButton("Import Main Video");
         JButton secondBtn = new JButton("Import Linked Video");
         DefaultListModel listModel = new DefaultListModel();
@@ -30,7 +30,7 @@ public class Authoring extends JFrame {
         VideoPlayer mainPlayer, secondPlayer;
 
         public ImportVideo() {
-            super(new FlowLayout(FlowLayout.LEADING, 30, 20));
+            super(new FlowLayout(FlowLayout.LEADING, 10, 5));
             add(label);
             add(mainVideoName);
             add(mainBtn);
@@ -42,7 +42,7 @@ public class Authoring extends JFrame {
             list.setLayoutOrientation(JList.VERTICAL_WRAP);
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             scrollPane.setViewportView(list);
-            scrollPane.setPreferredSize(new Dimension(300, 60));
+            scrollPane.setPreferredSize(new Dimension(150, 60));
 
             mainBtn.addActionListener(new ActionListener() {
 
@@ -54,7 +54,7 @@ public class Authoring extends JFrame {
                     int val = fc.showOpenDialog(null);
                     if (val == JFileChooser.APPROVE_OPTION) {
                         File videoFile = fc.getSelectedFile();
-                        mainVideoName.setText(videoFile.getAbsolutePath());
+                        mainVideoName.setText(videoFile.getName());
                         mainPlayer.importVideo(videoFile);
                         System.out.println("Main Video: " + videoFile);
                     } else {

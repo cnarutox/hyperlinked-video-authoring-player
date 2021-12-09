@@ -124,23 +124,17 @@ public class VideoPlayer extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		// System.out.println("paintComponent");
-
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(frameImg, 5, 5, this);
 
-		// ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
-		// "C:/Users/16129/OneDrive - University of Southern
-		// California/CS576/DS/AIFilmOne", currentFrame);
-		// System.out.println(regions.size());
-		// if (regions.size() > 0) {
-
-		// for (Iterator<Region> it = regions.iterator(); it.hasNext();) {
-		// Region curRegion = (Region) it.next();
-
-		// linkDisplay.draw(curRegion, g2);
-		// }
-		// }
+		if (videoPath == null)
+			return;
+		ArrayList<Region> regions = (ArrayList<Region>) links.inRegion(
+				videoPath.getAbsolutePath(), currentFrame);
+		for (Iterator<Region> it = regions.iterator(); it.hasNext();) {
+			Region curRegion = (Region) it.next();
+			linkDisplay.draw(curRegion, g2);
+		}
 	}
 
 	boolean beforeDragStatus = false;

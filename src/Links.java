@@ -9,27 +9,27 @@ public class Links {
     Map<String, List<Region>> linkedMap = new HashMap<String, List<Region>>();
 
     public void putRegion(String fromFile, Region newRegion) {
-        if (this.linkedMap.containsKey(fromFile)) {
-            ArrayList<Region> regionList = (ArrayList<Region>) this.linkedMap.get(fromFile);
+        if (linkedMap.containsKey(fromFile)) {
+            ArrayList<Region> regionList = (ArrayList<Region>) linkedMap.get(fromFile);
             regionList.add(newRegion);
-            this.linkedMap.put(fromFile, regionList);
+            linkedMap.put(fromFile, regionList);
         } else {
             ArrayList<Region> regionList = new ArrayList<Region>() {
                 {
                     add(newRegion);
                 }
             };
-            this.linkedMap.put(fromFile, regionList);
+            linkedMap.put(fromFile, regionList);
         }
     }
 
     // get all region(with bound and linkedframe) within frame
     public List<Region> inRegion(String fromFile, int frame) {
         ArrayList<Region> regions = new ArrayList<Region>();
-        if (!this.linkedMap.containsKey(fromFile)) {
+        if (!linkedMap.containsKey(fromFile)) {
             return null;
         }
-        for (Iterator<Region> it = this.linkedMap.get(fromFile).iterator(); it.hasNext();) {
+        for (Iterator<Region> it = linkedMap.get(fromFile).iterator(); it.hasNext();) {
             Region curRegion = (Region) it.next();
             if (curRegion.getBound(frame) != null) {
                 regions.add(curRegion.getBound(frame));
