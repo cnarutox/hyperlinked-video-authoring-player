@@ -10,20 +10,16 @@ public class LinkDisplay {
 
     VideoPlayer videoPlayer;
 
-    Point mouseClicked = new Point(-1, -1);
+    Point clickedPoint = new Point(-1, -1);
 
     LinkDisplay(VideoPlayer videoPlayer) {
         this.videoPlayer = videoPlayer;
         MouseInputAdapter input = new MouseInputAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
-                mouseClicked = e.getPoint();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 // System.out.println("mouseReleased ");
-                if (videoPlayer.filelength > 0 && videoPlayer.isPaused) {
+                clickedPoint = e.getPoint();
+                if (videoPlayer.filelength > 0) {
                     // import if clicked in ROI
                     ArrayList<Region> regions = getInRegions(videoPlayer.videoPath.getAbsolutePath(),
                             videoPlayer.currentFrame);
@@ -33,21 +29,22 @@ public class LinkDisplay {
                             videoPlayer.isPaused = true;
                             videoPlayer.audio.stop();
                             videoPlayer.importVideo(new File(curRegion.getLinkedFile()), curRegion.getLinkedFrame());
+                            clickedPoint = new Point(-1, -1);
                             break;
                         }
                     }
                 }
-                mouseClicked = new Point(-1, -1);
             }
         };
-        if (Authoring.authoring == null)
+        if (Authoring.authoring == null) {
             this.videoPlayer.addMouseListener(input);
+        }
     }
 
     public boolean isClickedInROI(double[] vetexes) {
-        if (mouseClicked.getX() >= vetexes[0] && mouseClicked.getX() <= vetexes[2]
-                && mouseClicked.getY() >= vetexes[1]
-                && mouseClicked.getY() <= vetexes[3]) {
+        if (clickedPoint.getX() >= vetexes[0] && clickedPoint.getX() <= vetexes[2]
+                && clickedPoint.getY() >= vetexes[1]
+                && clickedPoint.getY() <= vetexes[3]) {
             return true;
         }
         return false;
@@ -61,11 +58,14 @@ public class LinkDisplay {
     public void drawRegion(Graphics g2) {
         ArrayList<Region> regions = getInRegions(videoPlayer.videoPath.getAbsolutePath(), videoPlayer.currentFrame);
         for (Region region : regions) {
-            if (draw(region, g2)) {
-                videoPlayer.isPaused = true;
-                videoPlayer.audio.stop();
-                videoPlayer.importVideo(new File(region.getLinkedFile()), region.getLinkedFrame());
-            }
+            // if (draw(region, g2)) {
+            // videoPlayer.isPaused = true;
+            // videoPlayer.audio.stop();
+            // videoPlayer.importVideo(new File(region.getLinkedFile()),
+            // region.getLinkedFrame());
+            // break;
+            // }
+            draw(region, g2);
         }
     }
 
@@ -74,9 +74,9 @@ public class LinkDisplay {
         g.setColor(Color.BLACK);
         g.drawRect((int) vetexes[0], (int) vetexes[1], (int) (vetexes[2] - vetexes[0]),
                 (int) (vetexes[3] - vetexes[1]));
-        if (isClickedInROI(vetexes)) {
-            return true;
-        }
+        // if (isClickedInROI(vetexes)) {
+        // return true;
+        // }
         return false;
     }
 

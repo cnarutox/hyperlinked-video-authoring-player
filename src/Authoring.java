@@ -10,13 +10,14 @@ import java.awt.event.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Authoring extends JFrame {
 
     public static Authoring authoring;
     static boolean isCreating = false;
-    static VideoPlayer mainVideoPlayer, secondVideoPlayer;
+    static VideoPlayer mainVideoPlayer, secondPlayer;
     static ImportVideo importPanel = new ImportVideo();
 
     public Authoring(String s) {
@@ -28,7 +29,7 @@ public class Authoring extends JFrame {
         JTextField mainVideoName = new JTextField(10);
         JButton mainBtn = new JButton("Import Main Video");
         JButton secondBtn = new JButton("Import Linked Video");
-        JButton saveFile = new JButton("Save HyperLinked Video");
+        static JButton saveFile = new JButton("Save HyperLinked Video");
         static DefaultListModel listModel = new DefaultListModel();
         static JList list = new JList(listModel);
         JScrollPane scrollPane = new JScrollPane();
@@ -49,7 +50,7 @@ public class Authoring extends JFrame {
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             scrollPane.setViewportView(list);
             scrollPane.setPreferredSize(new Dimension(150, 60));
-
+            mainVideoName.setHorizontalAlignment(JTextField.CENTER);
             mainBtn.addActionListener(new ActionListener() {
 
                 @Override
@@ -58,13 +59,24 @@ public class Authoring extends JFrame {
                     JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
                     fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     int val = fc.showOpenDialog(null);
+                    File videoFile = fc.getSelectedFile();
                     if (val == JFileChooser.APPROVE_OPTION) {
-                        File videoFile = fc.getSelectedFile();
-                        mainVideoName.setText(videoFile.getName());
-                        mainVideoPlayer.importVideo(videoFile, 0);
-                        System.out.println("Main Video: " + videoFile);
-                    } else {
-                        // videoName.setText("file not selected");
+                        if (Arrays.asList(videoFile.listFiles())
+                                .contains(new File(videoFile, videoFile.getName() + ".wav"))) {
+                            mainVideoName.setText(videoFile.getName());
+                            if (mainVideoPlayer.videoPath != null && mainVideoPlayer.links.linkedMap
+                                    .get(mainVideoPlayer.videoPath.getAbsolutePath()).size() > 0) {
+                                JOptionPane.showMessageDialog(Authoring.authoring,
+                                        "Save HyperLinks Automatically",
+                                        "Notification", 1);
+                                mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath);
+                                mainVideoPlayer.links.linkedMap.clear();
+                                saveFile.setEnabled(false);
+                            }
+                            mainVideoPlayer.importVideo(videoFile, 0);
+                        } else
+                            JOptionPane.showMessageDialog(Authoring.authoring, "Please import the correct directory!",
+                                    "should contains .rgb .wav files", 2);
                     }
                 }
             });
@@ -77,8 +89,7 @@ public class Authoring extends JFrame {
                         if (list.getSelectedIndex() == -1) {
                             // No selection, disable fire button.
                         } else {
-                            System.out.println("Select File" + list.getSelectedValue());
-                            secondVideoPlayer.importVideo(videofiles.get(list.getSelectedValue()), 0);
+                            secondPlayer.importVideo(videofiles.get(list.getSelectedValue()), 0);
                         }
                     }
                 }
@@ -90,24 +101,31 @@ public class Authoring extends JFrame {
                     JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
                     fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     int val = fc.showOpenDialog(null);
-                    if (val == JFileChooser.APPROVE_OPTION) {
-                        File videoFile = fc.getSelectedFile();
-                        if (!videofiles.containsKey(videoFile.getName())) {
+                    File videoFile = fc.getSelectedFile();
+                    if (val == JFileChooser.APPROVE_OPTION && !videofiles.containsKey(videoFile.getName())) {
+                        if (Arrays.asList(videoFile.listFiles())
+                                .contains(new File(videoFile, videoFile.getName() + ".wav"))) {
                             listModel.addElement(videoFile.getName());
                             videofiles.put(videoFile.getName(), videoFile);
                             list.setSelectedIndex(listModel.lastIndexOf(listModel.lastElement()));
-                            System.out.println("Load Video: " + videoFile);
+                        } else {
+                            JOptionPane.showMessageDialog(Authoring.authoring, "Please import the correct directory!",
+                                    "should contains .rgb .wav files", 2);
                         }
-                    } else {
-                        // videoName.setText("file not selected");
                     }
+
                 }
             });
 
-            saveFile.addActionListener(e -> {
-                if (mainVideoPlayer.videoPath != null)
+            saveFile.addActionListener(e ->
+
+            {
+                if (mainVideoPlayer.videoPath != null) {
                     mainVideoPlayer.links.toLocalFile(mainVideoPlayer.videoPath);
+                    saveFile.setEnabled(false);
+                }
             });
+            saveFile.setEnabled(false);
         }
 
     }
@@ -122,7 +140,7 @@ public class Authoring extends JFrame {
 
         JSlider slider = new JSlider(1, 9000);
         slider.setMajorTickSpacing(900);
-        // slider.setMinorTickSpacing(30);
+        slider.setMinorTickSpacing(150);
         slider.setPaintLabels(true);
         slider.setPaintTicks(true);
         slider.setValue(0);
@@ -158,7 +176,7 @@ public class Authoring extends JFrame {
         authoring.add(linkPanel, BorderLayout.CENTER);
 
         JPanel secondArea = authoring.createVideoArea();
-        secondVideoPlayer = (VideoPlayer) secondArea.getComponent(0);
+        secondPlayer = (VideoPlayer) secondArea.getComponent(0);
         authoring.add(secondArea, BorderLayout.EAST);
 
         authoring.pack();

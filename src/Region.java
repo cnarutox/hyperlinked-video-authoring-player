@@ -1,4 +1,5 @@
 import java.util.*;
+import java.awt.Point;
 
 public class Region {
     class Bound {
@@ -72,6 +73,13 @@ public class Region {
             int startFrame, int endFrame) {
         this.startBound = new Bound(xStartLeftTop, yStartLeftTop, xStartRightBottom, yStartRightBottom, startFrame);
         this.endBound = new Bound(xStartLeftTop, yStartLeftTop, xStartRightBottom, yStartRightBottom, endFrame);
+    }
+
+    Region(Point leftTop, Point rightBottom, int startFrame, int endFrame) {
+        this.startBound = new Bound(Math.min(leftTop.x, rightBottom.x), Math.min(leftTop.y, rightBottom.y),
+                Math.max(leftTop.x, rightBottom.x), Math.max(leftTop.y, rightBottom.y), startFrame);
+        this.endBound = new Bound(Math.min(leftTop.x, rightBottom.x), Math.min(leftTop.y, rightBottom.y),
+                Math.max(leftTop.x, rightBottom.x), Math.max(leftTop.y, rightBottom.y), endFrame);
     }
 
     @Override
