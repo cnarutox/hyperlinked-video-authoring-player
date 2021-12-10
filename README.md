@@ -33,7 +33,8 @@
 
   #### Run `Authoring Tool`
   ```console
-  javac src/Authroing.java | java src/Authoring
+  javac src/*.java -d bin
+  java -cp bin Authoring
   ```
   - Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
   - Make sure to click Save HyperLinked Video before chaning main video
@@ -96,7 +97,8 @@
 
   #### How to run `Video Player`
   ```console
-  Javac VideoPlayer.java | java VideoPlayer
+  javac src/*.java -d bin
+  java -cp bin VideoPlayer
   ```
   - Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
   - Make sure to click Save HyperLinked Video before chaning main video
