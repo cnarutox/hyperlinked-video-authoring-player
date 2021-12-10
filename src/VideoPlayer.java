@@ -102,6 +102,8 @@ public class VideoPlayer extends JPanel {
 				}
 			}
 		});
+		
+
 		t.start();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
@@ -279,10 +281,10 @@ public class VideoPlayer extends JPanel {
 		}
 	}
 
-	class LRUCache extends LinkedHashMap<Integer, BufferedImage> {
+	class Cache extends LinkedHashMap<Integer, BufferedImage> {
 		private int capacity;
 
-		public LRUCache(int capacity) {
+		public Cache(int capacity) {
 			super(capacity, 0.75F, false);
 			this.capacity = capacity;
 		}
@@ -301,7 +303,7 @@ public class VideoPlayer extends JPanel {
 		}
 	}
 
-	LRUCache cache = new LRUCache(300);
+	Cache cache = new Cache(300);
 
 	public static void main(String[] args) {
 		Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
