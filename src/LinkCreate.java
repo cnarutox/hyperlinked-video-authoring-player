@@ -168,16 +168,19 @@ public class LinkCreate {
                 mainVideoPlayer.isPaused = true;
                 mainVideoPlayer.audio.stop();
                 createBtn.setText("   Cancel  ");
+                saveBtn.setEnabled(true);
                 newLinkName.setText("New link");
                 linkInfo.setText(String.format("from %d to ?", Authoring.mainVideoPlayer.currentFrame));
+                linksList.clearSelection();
                 operationInfo.setText("Please set the first bound of the start frame");
                 operationInfo.setForeground(Color.BLUE);
             } else {
                 isDrawing = false;
+                regionIndex = -1;
                 Authoring.isCreating = false;
                 Authoring.mainVideoPlayer.links.removeLast();
-                regionIndex = -1;
                 createBtn.setText("Create Link");
+                saveBtn.setEnabled(false);
                 newLinkName.setText("");
                 linkInfo.setText("No link selected");
                 operationInfo.setText("You can create hyperlink for them");
@@ -196,6 +199,7 @@ public class LinkCreate {
                 Authoring.isCreating = false;
                 dataModel.addElement(regionIndex + "." + newLinkName.getText());
                 createBtn.setText("Create Link");
+                saveBtn.setEnabled(false);
                 newLinkName.setText("");
                 linkInfo.setText("No link selected");
                 operationInfo.setText("You can create hyperlink for them");

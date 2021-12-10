@@ -17,7 +17,6 @@ public class LinkDisplay {
         MouseInputAdapter input = new MouseInputAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // System.out.println("mousePressed " + e.getPoint());
                 mouseClicked = e.getPoint();
             }
 

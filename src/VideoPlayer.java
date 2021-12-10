@@ -237,7 +237,6 @@ public class VideoPlayer extends JPanel {
 		lastStartTime = 0;
 		if (linkCreate != null) {
 			linkCreate.createBtn.setEnabled(true);
-			linkCreate.saveBtn.setEnabled(true);
 		}
 
 		currentFrame = startFrame;
