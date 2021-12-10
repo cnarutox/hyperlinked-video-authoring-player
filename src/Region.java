@@ -1,7 +1,10 @@
 import java.util.*;
+import java.awt.Color;
 import java.awt.Point;
 
 public class Region {
+    Color color = Color.BLACK;
+
     class Bound {
         double xLeftTop, yLeftTop, xRightBottom, yRightBottom;
         int frame;
@@ -115,6 +118,7 @@ public class Region {
                         / (this.endBound.frame - this.startBound.frame + 1) * (frame - this.startBound.frame);
         Region newRegion = new Region(curXLeftTop, curYLeftTop, curXRightBottom, curYRightBottom, frame, frame);
         newRegion.setLinkedInfo(this.linkedFile, this.linkedFrame);
+        newRegion.color = color;
         return newRegion;
     }
 

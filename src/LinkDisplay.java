@@ -1,6 +1,6 @@
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-
+import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.*;
 import java.io.*;
@@ -28,7 +28,11 @@ public class LinkDisplay {
                         if (isClickedInROI(vetexes)) {
                             videoPlayer.isPaused = true;
                             videoPlayer.audio.stop();
+                            videoPlayer.sourceFile = videoPlayer.videoPath;
+                            videoPlayer.sourceFrame = videoPlayer.currentFrame;
                             videoPlayer.importVideo(new File(curRegion.getLinkedFile()), curRegion.getLinkedFrame());
+                            videoPlayer.mainVideoName.setText(videoPlayer.videoPath.getName());
+                            VideoPlayer.returnBtn.setEnabled(true);
                             clickedPoint = new Point(-1, -1);
                             break;
                         }
@@ -51,33 +55,21 @@ public class LinkDisplay {
     }
 
     public ArrayList<Region> getInRegions(String fromFile, int frame) {
-        return (ArrayList<Region>) videoPlayer.links.inRegion(
-                fromFile, frame);
+        return (ArrayList<Region>) videoPlayer.links.inRegion(fromFile, frame);
     }
 
     public void drawRegion(Graphics g2) {
-        if (videoPlayer.isPaused){ return;}
         ArrayList<Region> regions = getInRegions(videoPlayer.videoPath.getAbsolutePath(), videoPlayer.currentFrame);
         for (Region region : regions) {
-            // if (draw(region, g2)) {
-            // videoPlayer.isPaused = true;
-            // videoPlayer.audio.stop();
-            // videoPlayer.importVideo(new File(region.getLinkedFile()),
-            // region.getLinkedFrame());
-            // break;
-            // }
             draw(region, g2);
         }
     }
 
     public boolean draw(Region curRegion, Graphics g) {
         double[] vetexes = curRegion.getVetex(true);
-        g.setColor(Color.BLACK);
+        ((Graphics2D) g).setColor(curRegion.color);
         g.drawRect((int) vetexes[0], (int) vetexes[1], (int) (vetexes[2] - vetexes[0]),
                 (int) (vetexes[3] - vetexes[1]));
-        // if (isClickedInROI(vetexes)) {
-        // return true;
-        // }
         return false;
     }
 

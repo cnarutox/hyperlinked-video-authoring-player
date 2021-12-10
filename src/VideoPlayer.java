@@ -35,7 +35,10 @@ public class VideoPlayer extends JPanel {
 	LinkDisplay linkDisplay;
 	Sound audio;
 
-	static JTextField mainVideoName = new JTextField(10);
+	JTextField mainVideoName = new JTextField(10);
+	static JButton returnBtn = new JButton("Return");
+	File sourceFile;
+	int sourceFrame = 0;
 
 	// static PlaySound playSound;
 
@@ -143,10 +146,11 @@ public class VideoPlayer extends JPanel {
 		if (videoPath == null)
 			return;
 		Graphics2D g2 = (Graphics2D) g;
+		g2.setStroke(new BasicStroke(5));
 		g2.drawImage(frameImg, 5, 5, this);
+		linkDisplay.drawRegion(g2);
 		if (Authoring.isCreating && linkCreate != null && linkCreate.isDrawing)
 			linkCreate.draw(g2);
-		linkDisplay.drawRegion(g2);
 		// }
 	}
 
@@ -236,7 +240,6 @@ public class VideoPlayer extends JPanel {
 		System.out.println("importVideo " + videoPath.getName());
 		links.fromFile = videoPath.getAbsolutePath();
 		links.linkedMap.clear();
-		mainVideoName.setText(videoPath.getName());
 		isPaused = true;
 		beforeDragStatus = true;
 		cache.clear();
@@ -301,18 +304,13 @@ public class VideoPlayer extends JPanel {
 	LRUCache cache = new LRUCache(300);
 
 	public static void main(String[] args) {
-
-		// VideoPlayer VP = new VideoPlayer();
 		Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
 		JPanel mainVideo = authoring.createVideoArea();
-		authoring.add(mainVideo);
-
 		VideoPlayer mainVideoPlayer = (VideoPlayer) mainVideo.getComponent(0);
-
 		JPanel importVideoPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));
-
 		JButton mainBtn = new JButton("Import Video");
-
+		mainVideoPlayer.mainVideoName.setHorizontalAlignment(JTextField.CENTER);
+		authoring.add(mainVideo);
 		mainBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -323,7 +321,7 @@ public class VideoPlayer extends JPanel {
 				int val = fc.showOpenDialog(null);
 				if (val == JFileChooser.APPROVE_OPTION) {
 					File videoFile = fc.getSelectedFile();
-					mainVideoName.setText(videoFile.getName());
+					mainVideoPlayer.mainVideoName.setText(videoFile.getName());
 					mainVideoPlayer.importVideo(videoFile, 0);
 					System.out.println("readLocalFile: "
 							+ String.format("%s/%s.txt", videoFile.getAbsolutePath(), videoFile.getName()));
@@ -342,8 +340,20 @@ public class VideoPlayer extends JPanel {
 				}
 			}
 		});
-		importVideoPanel.add(mainVideoName);
+
+		returnBtn.addActionListener(e -> {
+			if (mainVideoPlayer.sourceFile != null) {
+				System.out.println(mainVideoPlayer.sourceFile);
+				mainVideoPlayer.importVideo(mainVideoPlayer.sourceFile, mainVideoPlayer.sourceFrame);
+				mainVideoPlayer.mainVideoName.setText(mainVideoPlayer.sourceFile.getName());
+				returnBtn.setEnabled(false);
+			}
+		});
+		returnBtn.setEnabled(false);
+
 		importVideoPanel.add(mainBtn);
+		importVideoPanel.add(mainVideoPlayer.mainVideoName);
+		importVideoPanel.add(returnBtn);
 		authoring.getContentPane().add(importVideoPanel, BorderLayout.NORTH);
 
 		authoring.pack();

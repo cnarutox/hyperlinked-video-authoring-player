@@ -6,6 +6,7 @@ import java.util.List;
 import java.awt.*;
 
 import javax.naming.ldap.ManageReferralControl;
+import javax.print.DocFlavor.STRING;
 import javax.swing.*;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
@@ -29,6 +30,8 @@ public class LinkCreate {
     DefaultListModel dataModel = new DefaultListModel<String>();
 
     LinkCreate that = this;
+
+    Region selectedRegion;
 
     LinkCreate(VideoPlayer mainPlayer) {
         this.mainPlayer = mainPlayer;
@@ -124,18 +127,24 @@ public class LinkCreate {
                 if (linksList.getSelectedIndex() == -1) {
                     // No selection, disable fire button.
                     System.out.println("No selection");
+                    if (selectedRegion != null)
+                        selectedRegion.color = Color.BLACK;
                 } else {
-                    Region region = mainPlayer.links
+                    if (selectedRegion != null)
+                        selectedRegion.color = Color.BLACK;
+                    selectedRegion = mainPlayer.links
                             .getItems(mainPlayer.videoPath.getAbsolutePath()).get(
                                     Integer.valueOf(((String) linksList.getSelectedValue())
                                             .split("\\.")[0]));
-                    mainPlayer.refresh(region.startBound.frame);
-                    Authoring.secondPlayer.refresh(region.startBound.frame);
+                    selectedRegion.color = Color.RED;
+                    mainPlayer.refresh(selectedRegion.startBound.frame);
+                    Authoring.secondPlayer.refresh(selectedRegion.startBound.frame);
 
-                    int idx = Authoring.ImportVideo.listModel.indexOf(new File(region.getLinkedFile()).getName());
+                    int idx = Authoring.ImportVideo.listModel
+                            .indexOf(new File(selectedRegion.getLinkedFile()).getName());
                     Authoring.ImportVideo.list.setSelectedIndex(idx);
-                    Authoring.secondPlayer.currentFrame = region.linkedFrame;
-                    Authoring.secondPlayer.slider.setValue(region.linkedFrame);
+                    Authoring.secondPlayer.currentFrame = selectedRegion.linkedFrame;
+                    Authoring.secondPlayer.slider.setValue(selectedRegion.linkedFrame);
                     Authoring.secondPlayer.repaint();
                 }
             }
@@ -158,9 +167,12 @@ public class LinkCreate {
                 mainPlayer.isPaused = true;
                 mainPlayer.audio.stop();
                 createBtn.setText("   Cancel  ");
-                newLinkName.setText("New link");
+                newLinkName.setText("NewLink");
                 linkInfo.setText(String.format("from %d to ?", Authoring.mainVideoPlayer.currentFrame));
                 linksList.clearSelection();
+                if (selectedRegion != null)
+                    selectedRegion.color = Color.BLACK;
+                selectedRegion = null;
                 operationInfo.setText("Please set the first bound of the start frame");
                 operationInfo.setForeground(Color.BLUE);
             } else {
@@ -187,7 +199,8 @@ public class LinkCreate {
                     return;
                 }
                 Authoring.isCreating = false;
-                dataModel.addElement(regionIndex + "." + newLinkName.getText());
+                dataModel.addElement(String.format("%d. %s -> %s (frame %d)", regionIndex, newLinkName.getText(),
+                        Authoring.secondPlayer.videoPath.getName(), Authoring.secondPlayer.currentFrame));
 
                 createBtn.setText("Create Link");
                 saveBtn.setEnabled(false);
