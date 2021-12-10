@@ -1,35 +1,23 @@
-  ## Overview
+  # HyperLinked Video Authoring Tool & Player
   > **Hypervideo**, or **Hyperlinked video**. Hypervideo video is a displayed video stream that contains embedded, user-clickable anchors allowing navigation between video and other hypermedia elements. https://github.com/cnarutox/hyperlinked-video-authoring-player
   
 
   ## Feature
   A **Low latency**, **synchronized**, **easy-to-use** tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
-  
-  [Authoring Tool Demo Video](https://youtu.be/yfJ6UC1cnnc)
 
-  ## Folder Structure
-
-  The workspace contains two folders by default, where:
-
-  - `src`: the folder to maintain sources
-  - `lib`: the folder to maintain dependencies
-
-  Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-  > If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there. https://github.com/cnarutox/hyperlinked-video-authoring-player
-
-  ## Dependency Management
-
-  The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-
+[Authoring Tool Demo Video](https://youtu.be/yfJ6UC1cnnc)
 
   ## Project Architecture
-  ### Authoring Tool
+  ### 1. Authoring Tool
 
   A authoring tool integrating `Import Video`, `Slide over Frame`, `Create Editable Link`, `Edit Bounding Box`, `Save HyperLink` to create hyperlinks from one file to another.
 
+<p align="center"><img src="https://github.com/cnarutox/cnarutox/blob/main/img/Authoring.gif?raw=true"></p>
+
   #### How it works
- [![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVEQ7XG5cbkltcG9ydFZpZGVvW0ltcG9ydCBNYWluIFZpZGVvXSAtLT4gU2xpZGVPdmVyVmlkZW8xKFNpbGRlIEZyYW1lcyk7XG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdEZyYW1lW0NyZWF0ZSBMaW5rXVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94W0RyYXcgQm94IEJvdWRpbmddIC0tPiB8Q2FuY2VsfCBTZWxlY3RGcmFtZVxuQ3JlYXRlQm94IC0tPiBOYW1lSHlwZXJMaW5re1JlbmFtZSBMaW5rfVxuXG5JbXBvcnRWaWRlbyAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMltJbXBvcnQgT3RoZXIgVmlkZW9zXSAtLT4gU2VsZWN0TGlua2VkRnJhbWUoU2VsZWN0IFRhcmdldCBGcmFtZSlcblxuXG5TZWxlY3RMaW5rZWRGcmFtZSAtLT4gTmFtZUh5cGVyTGlua1xuTmFtZUh5cGVyTGluayAtLT4gSW1wb3J0VmlkZW9cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NbU2F2ZSBMaW5rXVxuIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)](https://mermaid.live/edit/#eyJjb2RlIjoiZ3JhcGggVEQ7XG5cbkltcG9ydFZpZGVvW0ltcG9ydCBNYWluIFZpZGVvXSAtLT4gU2xpZGVPdmVyVmlkZW8xKFNpbGRlIEZyYW1lcyk7XG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdEZyYW1lW0NyZWF0ZSBMaW5rXVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94W0RyYXcgQm94IEJvdWRpbmddIC0tPiB8Q2FuY2VsfCBTZWxlY3RGcmFtZVxuQ3JlYXRlQm94IC0tPiBOYW1lSHlwZXJMaW5re1JlbmFtZSBMaW5rfVxuXG5JbXBvcnRWaWRlbyAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMltJbXBvcnQgT3RoZXIgVmlkZW9zXSAtLT4gU2VsZWN0TGlua2VkRnJhbWUoU2VsZWN0IFRhcmdldCBGcmFtZSlcblxuXG5TZWxlY3RMaW5rZWRGcmFtZSAtLT4gTmFtZUh5cGVyTGlua1xuTmFtZUh5cGVyTGluayAtLT4gSW1wb3J0VmlkZW9cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NbU2F2ZSBMaW5rXVxuIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRlZmF1bHRcIlxufSIsInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZX0)
+  
+<p align="center"><img src="https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVEQ7XG5cbkltcG9ydFZpZGVvW0ltcG9ydCBNYWluIFZpZGVvXSAtLT4gU2xpZGVPdmVyVmlkZW8xKFNpbGRlIEZyYW1lcyk7XG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdEZyYW1lW0NyZWF0ZSBMaW5rXVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94W0RyYXcgQm94IEJvdWRpbmddIC0tPiB8Q2FuY2VsfCBTZWxlY3RGcmFtZVxuQ3JlYXRlQm94IC0tPiBOYW1lSHlwZXJMaW5re1JlbmFtZSBMaW5rfVxuXG5JbXBvcnRWaWRlbyAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMltJbXBvcnQgT3RoZXIgVmlkZW9zXSAtLT4gU2VsZWN0TGlua2VkRnJhbWUoU2VsZWN0IFRhcmdldCBGcmFtZSlcblxuXG5TZWxlY3RMaW5rZWRGcmFtZSAtLT4gTmFtZUh5cGVyTGlua1xuTmFtZUh5cGVyTGluayAtLT4gSW1wb3J0VmlkZW9cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NbU2F2ZSBMaW5rXVxuIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ" alt="https://mermaid.live/edit/#eyJjb2RlIjoiZ3JhcGggVEQ7XG5cbkltcG9ydFZpZGVvW0ltcG9ydCBNYWluIFZpZGVvXSAtLT4gU2xpZGVPdmVyVmlkZW8xKFNpbGRlIEZyYW1lcyk7XG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdEZyYW1lW0NyZWF0ZSBMaW5rXVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94W0RyYXcgQm94IEJvdWRpbmddIC0tPiB8Q2FuY2VsfCBTZWxlY3RGcmFtZVxuQ3JlYXRlQm94IC0tPiBOYW1lSHlwZXJMaW5re1JlbmFtZSBMaW5rfVxuXG5JbXBvcnRWaWRlbyAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMltJbXBvcnQgT3RoZXIgVmlkZW9zXSAtLT4gU2VsZWN0TGlua2VkRnJhbWUoU2VsZWN0IFRhcmdldCBGcmFtZSlcblxuXG5TZWxlY3RMaW5rZWRGcmFtZSAtLT4gTmFtZUh5cGVyTGlua1xuTmFtZUh5cGVyTGluayAtLT4gSW1wb3J0VmlkZW9cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NbU2F2ZSBMaW5rXVxuIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRlZmF1bHRcIlxufSIsInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZX0"></p>
+
 
   #### Run `Authoring Tool`
   ```console
@@ -90,10 +78,11 @@
   ...
   [regionNstart.shapeInfo, regionNstart.frame]?[regionNend.shapeInfo, regionNend.frame]?targetFileN?targetframeN
   ```
-  ### Video Player
+  ### 2. Video Player
 
   > __`Description`__: Play video and synchronize _Video source_ (.rgb files) and _Audio source_ (.wav files) automatically for the given frame rate.
  
+ <p align="center"><img src="https://github.com/cnarutox/cnarutox/blob/main/img/VideoPlayer.gif?raw=true"></p>
 
   #### How to run `Video Player`
   ```console
@@ -116,6 +105,7 @@
   #### Synchronize Mechanism
 
   - `Timer.scheduleAtFixedRate`: schedule _rendering image_ task for _repeated fixed-rate (frame rate)_ execution, beginning after the specified delay.
+  
       ```java
     Timer timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
@@ -181,7 +171,18 @@
       }
     }
     ```
-    
+  ## Folder Structure
 
+  The workspace contains two folders by default, where:
 
+  - `src`: the folder to maintain sources
+  - `lib`: the folder to maintain dependencies
+
+  Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+
+  > If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there. https://github.com/cnarutox/hyperlinked-video-authoring-player
+
+  ## Dependency Management
+
+  The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
 
