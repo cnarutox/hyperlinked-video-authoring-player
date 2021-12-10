@@ -64,8 +64,7 @@ public class Authoring extends JFrame {
                         if (Arrays.asList(videoFile.listFiles())
                                 .contains(new File(videoFile, videoFile.getName() + ".wav"))) {
                             mainVideoName.setText(videoFile.getName());
-                            if (mainVideoPlayer.videoPath != null && mainVideoPlayer.links.linkedMap
-                                    .get(mainVideoPlayer.videoPath.getAbsolutePath()).size() > 0) {
+                            if (mainVideoPlayer.videoPath != null && saveFile.isEnabled()) {
                                 JOptionPane.showMessageDialog(Authoring.authoring,
                                         "Save HyperLinks Automatically",
                                         "Notification", 1);

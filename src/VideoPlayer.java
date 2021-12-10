@@ -306,7 +306,7 @@ public class VideoPlayer extends JPanel {
 	Cache cache = new Cache(300);
 
 	public static void main(String[] args) {
-		Authoring authoring = new Authoring("HyperLinked Video Authoring Tool");
+		Authoring authoring = new Authoring("Interactive Video Player");
 		JPanel mainVideo = authoring.createVideoArea();
 		VideoPlayer mainVideoPlayer = (VideoPlayer) mainVideo.getComponent(0);
 		JPanel importVideoPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));

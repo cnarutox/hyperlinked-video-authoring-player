@@ -187,6 +187,7 @@ public class LinkCreate {
                 linkInfo.setText("No link selected");
                 operationInfo.setText("You can create hyperlink for them");
                 operationInfo.setForeground(Color.GRAY);
+                mainPlayer.repaint();
             }
         });
         createBtn.setEnabled(false);
@@ -198,9 +199,13 @@ public class LinkCreate {
                             "2st video not specified", 1);
                     return;
                 }
+                Region region = mainPlayer.links.linkedMap.get(mainPlayer.videoPath.getAbsolutePath()).get(regionIndex);
                 Authoring.isCreating = false;
-                dataModel.addElement(String.format("%d. %s -> %s (frame %d)", regionIndex, newLinkName.getText(),
-                        Authoring.secondPlayer.videoPath.getName(), Authoring.secondPlayer.currentFrame));
+                dataModel
+                        .addElement(String.format("%d. %s (%d > %d) →→ %s (frame %d)", regionIndex,
+                                newLinkName.getText(),
+                                region.startBound.frame, region.endBound.frame,
+                                Authoring.secondPlayer.videoPath.getName(), Authoring.secondPlayer.currentFrame));
 
                 createBtn.setText("Create Link");
                 saveBtn.setEnabled(false);
@@ -210,9 +215,8 @@ public class LinkCreate {
                 linkInfo.setText("No link selected");
                 operationInfo.setText("You can create hyperlink for them");
                 operationInfo.setForeground(Color.GRAY);
-                mainPlayer.links.linkedMap.get(mainPlayer.videoPath.getAbsolutePath()).get(regionIndex)
-                        .setLinkedInfo(Authoring.secondPlayer.videoPath.getAbsolutePath(),
-                                Authoring.secondPlayer.currentFrame);
+                region.setLinkedInfo(Authoring.secondPlayer.videoPath.getAbsolutePath(),
+                        Authoring.secondPlayer.currentFrame);
                 regionIndex = -1;
             }
         });
