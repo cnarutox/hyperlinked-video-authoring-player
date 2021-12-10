@@ -199,16 +199,7 @@ public class VideoPlayer extends JPanel {
 			if (!source.getValueIsAdjusting() || audio == null || videoPath == null) {
 				return;
 			}
-			isPaused = true;
-			audio.stop();
-			currentFrame = source.getValue() - 1;
-			if (cache.containsKey(currentFrame)) {
-				that.frameImg = cache.get(currentFrame);
-			} else {
-				String imgPath = videoPath.getAbsolutePath() + "/" + files[currentFrame];
-				that.frameImg = readImageRGB(width, height, imgPath, that.frameImg);
-			}
-			that.repaint();
+			refresh(source.getValue() - 1);
 		});
 		btnPlay.addActionListener(e -> {
 			if (videoPath == null)
@@ -221,12 +212,28 @@ public class VideoPlayer extends JPanel {
 		});
 	}
 
+	public void refresh(int frame) {
+		isPaused = true;
+		audio.stop();
+		currentFrame = frame;
+		slider.setValue(currentFrame + 1);
+		cacheIndex = currentFrame;
+		currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
+		if (cache.containsKey(currentFrame)) {
+			that.frameImg = cache.get(currentFrame);
+		} else {
+			String imgPath = videoPath.getAbsolutePath() + "/" + files[currentFrame];
+			that.frameImg = readImageRGB(width, height, imgPath, that.frameImg);
+		}
+		repaint();
+	}
+
 	public void importVideo(File videoPath, int startFrame) {
 		if (audio != null)
 			audio.stop();
 
 		this.videoPath = videoPath;
-		System.out.println("importVideo " + videoPath);
+		System.out.println("importVideo " + videoPath.getName());
 		links.fromFile = videoPath.getAbsolutePath();
 		links.linkedMap.clear();
 		mainVideoName.setText(videoPath.getName());
@@ -237,12 +244,12 @@ public class VideoPlayer extends JPanel {
 		lastStartTime = 0;
 		if (linkCreate != null) {
 			linkCreate.createBtn.setEnabled(true);
+			linkCreate.dataModel.clear();
 		}
 
 		currentFrame = startFrame;
 		cacheIndex = currentFrame;
 		currentTotalTime = (long) (currentFrame * ((double) 1000 / 30));
-		slider.setValue(startFrame + 1);
 
 		audio = new Sound(
 				String.format("%s/%s.wav", videoPath.getAbsolutePath(), videoPath.getName()));
@@ -257,6 +264,7 @@ public class VideoPlayer extends JPanel {
 		}
 		filelength = index;
 		slider.setMaximum(filelength);
+		slider.setValue(startFrame + 1);
 
 		if (frameImg == null)
 			frameImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
@@ -322,7 +330,7 @@ public class VideoPlayer extends JPanel {
 					// mainVideoPlayer.links.readLocalFile(
 					// String.format("%s/%s.txt", videoFile.getAbsolutePath(),
 					// videoFile.getName()));
-					System.out.println(mainVideoPlayer.links);
+					// System.out.println(mainVideoPlayer.links);
 					// System.out.println(mainVideoPlayer.links.getKeySet());
 					// for (String key : mainVideoPlayer.links.getKeySet()) {
 					// for (Region region : mainVideoPlayer.links.getItems(key)) {
