@@ -1,6 +1,7 @@
   ## Overview
   > **Hypervideo**, or **Hyperlinked video**. Hypervideo video is a displayed video stream that contains embedded, user-clickable anchors allowing navigation between video and other hypermedia elements. https://github.com/cnarutox/hyperlinked-video-authoring-player
   
+
   ## Feature
   A **Low latency**, **synchronized**, **easy-to-use** tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
 
@@ -28,13 +29,13 @@
   #### How it works
  [![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVEQ7XG5cbkltcG9ydFZpZGVvW0ltcG9ydCBNYWluIFZpZGVvXSAtLT4gU2xpZGVPdmVyVmlkZW8xKFNpbGRlIEZyYW1lcyk7XG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdEZyYW1lW0NyZWF0ZSBMaW5rXVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94W0RyYXcgQm94IEJvdWRpbmddIC0tPiB8Q2FuY2VsfCBTZWxlY3RGcmFtZVxuQ3JlYXRlQm94IC0tPiBOYW1lSHlwZXJMaW5re1JlbmFtZSBMaW5rfVxuXG5JbXBvcnRWaWRlbyAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMltJbXBvcnQgT3RoZXIgVmlkZW9zXSAtLT4gU2VsZWN0TGlua2VkRnJhbWUoU2VsZWN0IFRhcmdldCBGcmFtZSlcblxuXG5TZWxlY3RMaW5rZWRGcmFtZSAtLT4gTmFtZUh5cGVyTGlua1xuTmFtZUh5cGVyTGluayAtLT4gSW1wb3J0VmlkZW9cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NbU2F2ZSBMaW5rXVxuIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)](https://mermaid.live/edit/#eyJjb2RlIjoiZ3JhcGggVEQ7XG5cbkltcG9ydFZpZGVvW0ltcG9ydCBNYWluIFZpZGVvXSAtLT4gU2xpZGVPdmVyVmlkZW8xKFNpbGRlIEZyYW1lcyk7XG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdEZyYW1lW0NyZWF0ZSBMaW5rXVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94W0RyYXcgQm94IEJvdWRpbmddIC0tPiB8Q2FuY2VsfCBTZWxlY3RGcmFtZVxuQ3JlYXRlQm94IC0tPiBOYW1lSHlwZXJMaW5re1JlbmFtZSBMaW5rfVxuXG5JbXBvcnRWaWRlbyAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMltJbXBvcnQgT3RoZXIgVmlkZW9zXSAtLT4gU2VsZWN0TGlua2VkRnJhbWUoU2VsZWN0IFRhcmdldCBGcmFtZSlcblxuXG5TZWxlY3RMaW5rZWRGcmFtZSAtLT4gTmFtZUh5cGVyTGlua1xuTmFtZUh5cGVyTGluayAtLT4gSW1wb3J0VmlkZW9cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NbU2F2ZSBMaW5rXVxuIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRlZmF1bHRcIlxufSIsInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZX0)
 
-  #### How to run
+  #### Run `Authoring Tool`
   ```console
-  Run Authoring.java
-  Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
-  Make sure to click Save HyperLinked Video before chaning main video
+  javac src/Authroing.java | java src/Authoring
   ```
-
+  - Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
+  - Make sure to click Save HyperLinked Video before chaning main video
+  
   #### Data Structure
   - `HashMap`: restore links of maping pair of _primary file_  to _list of Region of Interest (includes region shape, size and hyperlink)_.
   ```java
@@ -91,12 +92,12 @@
   > __`Description`__: Play video and synchronize _Video source_ (.rgb files) and _Audio source_ (.wav files) automatically for the given frame rate.
  
 
-   #### How to run
+  #### How to run `Video Player`
   ```console
-  Run VideoPlayer.java
-  Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
-  Make sure to click Save HyperLinked Video before chaning main video
+  Javac VideoPlayer.java | java VideoPlayer
   ```
+  - Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
+  - Make sure to click Save HyperLinked Video before chaning main video
 
   #### Input Format
   - __``Video Format``__
