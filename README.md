@@ -30,27 +30,9 @@ hypermedia elements._
 
 > __`Tasks`__: A authoring tool integrating __*Load File*__, __*Slide over Frame*__, __*Create Editable Link*__, __*Editable Bounding Box*__, __*Save HyperLink*__ to create hyperlinks from one file to another.
 
-[![](https://mermaid.ink/img/eyJjb2RlIjoic3RhdGVEaWFncmFtLXYyXG5bKl0gLS0-IExvYWRWaWRlbzFcblxuTG9hZFZpZGVvMSAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMiAtLT4gU2VsZWN0TGlua2VkRnJhbWVcblxuTG9hZFZpZGVvMSAtLT4gU2xpZGVPdmVyVmlkZW8xXG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdFN0YXJ0RnJhbWVcblNlbGVjdFN0YXJ0RnJhbWUgLS0-IENyZWF0ZVN0YXJ0Qm94XG5DcmVhdGVTdGFydEJveCAtLT4gU2VsZWN0RW5kRnJhbWVcbkNyZWF0ZVN0YXJ0Qm94IC0tPiBDYW5jZWxTdGFydEJveFxuQ2FuY2VsU3RhcnRCb3ggLS0-IFNlbGVjdFN0YXJ0RnJhbWVcblxuU2VsZWN0RW5kRnJhbWUgLS0-IENyZWF0ZUVuZEJveFxuQ3JlYXRlRW5kQm94IC0tPiBDYW5jZWxFbmRCb3hcbkNhbmNlbEVuZEJveCAtLT4gU2VsZWN0RW5kRnJhbWVcblxuXG5DcmVhdGVFbmRCb3ggLS0-IE5hbWVIeXBlckxpbmtcblNlbGVjdExpbmtlZEZyYW1lIC0tPiBOYW1lSHlwZXJMaW5rXG5OYW1lSHlwZXJMaW5rIC0tPiBMb2FkVmlkZW8xXG5cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NcblxuXG5TYXZlSHlwZXJMaW5rcyAtLT4gWypdXG4iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlLCJhdXRvU3luYyI6dHJ1ZSwidXBkYXRlRGlhZ3JhbSI6ZmFsc2V9)](https://mermaid.live/edit/#eyJjb2RlIjoic3RhdGVEaWFncmFtLXYyXG5bKl0gLS0-IExvYWRWaWRlbzFcblxuTG9hZFZpZGVvMSAtLT4gTG9hZFZpZGVvMlxuTG9hZFZpZGVvMiAtLT4gU2VsZWN0TGlua2VkRnJhbWVcblxuTG9hZFZpZGVvMSAtLT4gU2xpZGVPdmVyVmlkZW8xXG5TbGlkZU92ZXJWaWRlbzEgLS0-IFNlbGVjdFN0YXJ0RnJhbWVcblNlbGVjdFN0YXJ0RnJhbWUgLS0-IENyZWF0ZVN0YXJ0Qm94XG5DcmVhdGVTdGFydEJveCAtLT4gU2VsZWN0RW5kRnJhbWVcbkNyZWF0ZVN0YXJ0Qm94IC0tPiBDYW5jZWxTdGFydEJveFxuQ2FuY2VsU3RhcnRCb3ggLS0-IFNlbGVjdFN0YXJ0RnJhbWVcblxuU2VsZWN0RW5kRnJhbWUgLS0-IENyZWF0ZUVuZEJveFxuQ3JlYXRlRW5kQm94IC0tPiBDYW5jZWxFbmRCb3hcbkNhbmNlbEVuZEJveCAtLT4gU2VsZWN0RW5kRnJhbWVcblxuXG5DcmVhdGVFbmRCb3ggLS0-IE5hbWVIeXBlckxpbmtcblNlbGVjdExpbmtlZEZyYW1lIC0tPiBOYW1lSHlwZXJMaW5rXG5OYW1lSHlwZXJMaW5rIC0tPiBMb2FkVmlkZW8xXG5cblxuTmFtZUh5cGVyTGluayAtLT4gU2F2ZUh5cGVyTGlua3NcblxuXG5TYXZlSHlwZXJMaW5rcyAtLT4gWypdXG4iLCJtZXJtYWlkIjoie1xuICBcInRoZW1lXCI6IFwiZGVmYXVsdFwiXG59IiwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)
+[![](https://mermaid.ink/img/eyJjb2RlIjoic3RhdGVEaWFncmFtLXYyXG5bKl0gLS0-IExvYWRWaWRlbzFcblxuXG5cbkxvYWRWaWRlbzEgLS0-IFNsaWRlT3ZlclZpZGVvMVxuU2xpZGVPdmVyVmlkZW8xIC0tPiBTZWxlY3RGcmFtZVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94IC0tPiBDYW5jZWxCb3hcbkNhbmNlbEJveCAtLT4gU2VsZWN0RnJhbWVcbkNyZWF0ZUJveCAtLT4gTmFtZUh5cGVyTGlua1xuXG5Mb2FkVmlkZW8xIC0tPiBMb2FkVmlkZW8yXG5Mb2FkVmlkZW8yIC0tPiBTZWxlY3RMaW5rZWRGcmFtZVxuXG5cblNlbGVjdExpbmtlZEZyYW1lIC0tPiBOYW1lSHlwZXJMaW5rXG5OYW1lSHlwZXJMaW5rIC0tPiBMb2FkVmlkZW8xXG5cbk5hbWVIeXBlckxpbmsgLS0-IFNhdmVIeXBlckxpbmtzXG5cblxuXG5cblxuXG5TYXZlSHlwZXJMaW5rcyAtLT4gWypdXG4iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlLCJhdXRvU3luYyI6dHJ1ZSwidXBkYXRlRGlhZ3JhbSI6ZmFsc2V9)](https://mermaid.live/edit/#eyJjb2RlIjoic3RhdGVEaWFncmFtLXYyXG5bKl0gLS0-IExvYWRWaWRlbzFcblxuXG5cbkxvYWRWaWRlbzEgLS0-IFNsaWRlT3ZlclZpZGVvMVxuU2xpZGVPdmVyVmlkZW8xIC0tPiBTZWxlY3RGcmFtZVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94IC0tPiBDYW5jZWxCb3hcbkNhbmNlbEJveCAtLT4gU2VsZWN0RnJhbWVcbkNyZWF0ZUJveCAtLT4gTmFtZUh5cGVyTGlua1xuXG5Mb2FkVmlkZW8xIC0tPiBMb2FkVmlkZW8yXG5Mb2FkVmlkZW8yIC0tPiBTZWxlY3RMaW5rZWRGcmFtZVxuXG5cblNlbGVjdExpbmtlZEZyYW1lIC0tPiBOYW1lSHlwZXJMaW5rXG5OYW1lSHlwZXJMaW5rIC0tPiBMb2FkVmlkZW8xXG5cbk5hbWVIeXBlckxpbmsgLS0-IFNhdmVIeXBlckxpbmtzXG5cblxuXG5cblxuXG5TYXZlSHlwZXJMaW5rcyAtLT4gWypdXG4iLCJtZXJtYWlkIjoie1xuICBcInRoZW1lXCI6IFwiZGVmYXVsdFwiXG59IiwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)
 
 
-* This is the first list item.
-* Here's the second list item.
-
-> A blockquote would look great below the second list item.
-
-```java
-  private void index(){
-    MessageBox.Show("hello world");
-}
-``` 
-<pre>
-$ python3 apple.py <em>arg1</em>
-</pre>
-
-* And here's the third list item.
-- 
-- ``Use `code` in your Markdown file.``
-- 
 ### Video Player
 
 > __`Tasks`__: Synchronize _Video source_ (.rgb files) and _Audio source_ (.wav files) manually with given frame rate.
@@ -68,16 +50,72 @@ $ python3 apple.py <em>arg1</em>
 #### Synchronize Mechanism
 
 - `Timer.scheduleAtFixedRate`: schedule _rendering image_ task for _repeated fixed-rate (frame rate)_ execution, beginning after the specified delay.
+    ```java
+  Timer timer = new Timer();
+  timer.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				// Render Image Operation
+			}
+		}, 0, 1000 / 30);
+  ```
 - `Cache`: use _LinkedHashMap_ (hashing-based data structure maintaining _insertion order_ or _access order_) as a Buffer to pre-load image data for rendering.
-- `Periodical Manual Synchronize`: amend precision error based on given frame rate to ensure frames per second.
-- `Thread`:  allow cache-updating to excute concurrently throughout video playing
   ```java
-  private void index(){
-    MessageBox.Show("hello world");
-  }
-  ``` 
-- `Clip`: a special kind of data line whose audio data can be loaded prior to playback, instead of being streamed in real time.
+  class Cache extends LinkedHashMap<Integer, BufferedImage> {
+		private int capacity;
 
+		public Cache(int capacity) {
+			super(capacity, 0.75F, false); // Maintain access order
+		}
+
+		@Override
+		protected boolean removeEldestEntry(Map.Entry<Integer, BufferedImage> eldest) {
+			return size() >= capacity; // Maintain maximum size of cache.
+		}
+	}
+
+  ```
+- `Thread`:  allow cache-updating to excute concurrently throughout video playing.
+  ``````JAVA
+  new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					// pre-loading cache
+				}
+			}
+		}).start();
+- `Periodical Manual Synchronize`: amend precision error based on given frame rate to ensure frames per second.
+  ```java
+  Timer timer = new Timer();
+  timer.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				// Check every integral second to synchronize
+				if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
+					currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime) / 1000) * 30;
+				}
+			}
+		}, 0, 1000 / 30);
+  ```
+ 
+- `Clip`: a special kind of data line whose audio data can be loaded prior to playback, and supports _`play()`_, _`stop()`_ and _`setMicrosecondPosition()`_ which is essential when redirect through hyperlink.
+  ```java
+  public class Sound {
+		private Clip clip;
+
+		public Sound(String fileName) {
+			// Initiate sound
+		}
+
+		public void play(long microseconds) {
+			clip.setMicrosecondPosition(microseconds * 1000);
+			clip.start();
+		}
+
+		public void stop() {
+			clip.stop();
+		}
+	}
+  ```
+  
 
 | variable | data structure  |                              usage                               |
 |:--------:|:---------------:|:----------------------------------------------------------------:|
