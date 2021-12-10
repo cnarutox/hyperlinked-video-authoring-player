@@ -36,7 +36,7 @@ public class Authoring extends JFrame {
         static HashMap<String, File> videofiles = new HashMap<String, File>();
 
         public ImportVideo() {
-            super(new FlowLayout(FlowLayout.LEADING, 10, 5));
+            super(new FlowLayout(FlowLayout.CENTER, 10, 5));
             add(label);
             add(mainVideoName);
             add(mainBtn);
