@@ -2,7 +2,7 @@
   > _**Hypervideo**, or **Hyperlinked video**. Hypervideo video is a displayed video stream that contains embedded, user-clickable anchors allowing navigation between video and other hypermedia elements._
   
   ## Feature
-  A _**Low latency**_, _**high concurrency**_, _**synchronized**_, _**easy-to-use**_ tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
+  A _**low latency**_, _**high concurrency**_, _**synchronized**_, _**easy-to-use**_ tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
 
   ### https://github.com/cnarutox/hyperlinked-video-authoring-player
 
@@ -78,17 +78,17 @@
   
   
   #### Meta file
-  - `file format`: `.txt` file with `same base name` as the primary video saved within primary video files directory.
+  - `File path`: `.txt` file with `same base name` as the primary video saved within primary video files directory.
   > _e.g._ The meta file for video _/usr/AIFilmOne/_ will be save at _/usr/AIFilmOne/AIFilmOne.txt._
   - `Content format`: The first line will refer to `primary file`, while the following lines will refer to `Regions of Interest` with hyperlink information respectively.
   > _e.g._ Example of _/usr/AIFilmOne/AIFilmOne.txt._ is as below.
   ```console
   /usr/AIFilmOne
-  [region1start.shapeInfo, region1start.frame]?[region1end.shapeInfo, region1end.frame]?linkedFile?linkedframe
-  [region2start.shapeInfo, region2start.frame]?[region2end.shapeInfo, region2end.frame]?linkedFile?linkedframe
-  [region3start.shapeInfo, region3start.frame]?[region3end.shapeInfo, region3end.frame]?linkedFile?linkedframe
+  [region1start.shapeInfo, region1start.frame]?[region1end.shapeInfo, region1end.frame]?targetFile1?targetframe1
+  [region2start.shapeInfo, region2start.frame]?[region2end.shapeInfo, region2end.frame]?targetFile2?targetframe2
+  [region3start.shapeInfo, region3start.frame]?[region3end.shapeInfo, region3end.frame]?targetFile3?targetframe3
   ...
-  [regionNstart.shapeInfo, regionNstart.frame]?[regionNend.shapeInfo, regionNend.frame]?linkedFile?linkedframe
+  [regionNstart.shapeInfo, regionNstart.frame]?[regionNend.shapeInfo, regionNend.frame]?targetFileN?targetframeN
   ```
   ### Video Player
 
