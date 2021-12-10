@@ -1,10 +1,10 @@
   ## Overview
-  > **Hypervideo**, or **Hyperlinked video**. Hypervideo video is a displayed video stream that contains embedded, user-clickable anchors allowing navigation between video and other hypermedia elements.
+  > **Hypervideo**, or **Hyperlinked video**. Hypervideo video is a displayed video stream that contains embedded, user-clickable anchors allowing navigation between video and other hypermedia elements. https://github.com/cnarutox/hyperlinked-video-authoring-player
   
   ## Feature
   A **Low latency**, **synchronized**, **easy-to-use** tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
 
-  ## [Folder Structure](https://github.com/cnarutox/hyperlinked-video-authoring-player)
+  ## Folder Structure
 
   The workspace contains two folders by default, where:
 
