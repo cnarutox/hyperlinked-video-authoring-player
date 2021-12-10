@@ -56,6 +56,7 @@ public class LinkDisplay {
     }
 
     public void drawRegion(Graphics g2) {
+        if (videoPlayer.isPaused){ return;}
         ArrayList<Region> regions = getInRegions(videoPlayer.videoPath.getAbsolutePath(), videoPlayer.currentFrame);
         for (Region region : regions) {
             // if (draw(region, g2)) {
