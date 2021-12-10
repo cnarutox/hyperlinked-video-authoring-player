@@ -102,13 +102,16 @@ public class VideoPlayer extends JPanel {
 				}
 			}
 		});
-		
 
 		t.start();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				if (currentFrame >= filelength || isPaused)
+				if (currentFrame >= filelength || isPaused) {
+					isPaused = true;
+					if (audio != null)
+						audio.stop();
 					return;
+				}
 				long currentTime = System.currentTimeMillis();
 				if ((currentTotalTime + currentTime - lastStartTime) % 1000 < 10) {
 					currentFrame = (int) ((currentTotalTime + currentTime - lastStartTime) / 1000) * 30;
@@ -269,6 +272,8 @@ public class VideoPlayer extends JPanel {
 		}
 		filelength = index;
 		slider.setMaximum(filelength);
+		slider.setMajorTickSpacing(filelength / 10);
+		slider.setMinorTickSpacing(filelength / 20);
 		slider.setValue(startFrame + 1);
 
 		if (frameImg == null)

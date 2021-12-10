@@ -4,6 +4,8 @@
 
   ## Feature
   A **Low latency**, **synchronized**, **easy-to-use** tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
+  
+  [Authoring Tool Demo Video](https://youtu.be/yfJ6UC1cnnc)
 
   ## Folder Structure
 
