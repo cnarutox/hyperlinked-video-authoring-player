@@ -25,7 +25,7 @@
   ## Project Architecture
   ### Authoring Tool
 
-  > __`Tasks`__: A authoring tool integrating __*Load File*__, __*Slide over Frame*__, __*Create Editable Link*__, __*Editable Bounding Box*__, __*Save HyperLink*__ to create hyperlinks from one file to another.
+  > __`Description`__: A authoring tool integrating __*Load File*__, __*Slide over Frame*__, __*Create Editable Link*__, __*Editable Bounding Box*__, __*Save HyperLink*__ to create hyperlinks from one file to another.
 
   #### How it works
   [![](https://mermaid.ink/img/eyJjb2RlIjoic3RhdGVEaWFncmFtLXYyXG5bKl0gLS0-IExvYWRWaWRlbzFcblxuXG5cbkxvYWRWaWRlbzEgLS0-IFNsaWRlT3ZlclZpZGVvMVxuU2xpZGVPdmVyVmlkZW8xIC0tPiBTZWxlY3RGcmFtZVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94IC0tPiBDYW5jZWxCb3hcbkNhbmNlbEJveCAtLT4gU2VsZWN0RnJhbWVcbkNyZWF0ZUJveCAtLT4gTmFtZUh5cGVyTGlua1xuXG5Mb2FkVmlkZW8xIC0tPiBMb2FkVmlkZW8yXG5Mb2FkVmlkZW8yIC0tPiBTZWxlY3RMaW5rZWRGcmFtZVxuXG5cblNlbGVjdExpbmtlZEZyYW1lIC0tPiBOYW1lSHlwZXJMaW5rXG5OYW1lSHlwZXJMaW5rIC0tPiBMb2FkVmlkZW8xXG5cbk5hbWVIeXBlckxpbmsgLS0-IFNhdmVIeXBlckxpbmtzXG5cblxuXG5cblxuXG5TYXZlSHlwZXJMaW5rcyAtLT4gWypdXG4iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlLCJhdXRvU3luYyI6dHJ1ZSwidXBkYXRlRGlhZ3JhbSI6ZmFsc2V9)](https://mermaid.live/edit/#eyJjb2RlIjoic3RhdGVEaWFncmFtLXYyXG5bKl0gLS0-IExvYWRWaWRlbzFcblxuXG5cbkxvYWRWaWRlbzEgLS0-IFNsaWRlT3ZlclZpZGVvMVxuU2xpZGVPdmVyVmlkZW8xIC0tPiBTZWxlY3RGcmFtZVxuU2VsZWN0RnJhbWUgLS0-IENyZWF0ZUJveFxuQ3JlYXRlQm94IC0tPiBDYW5jZWxCb3hcbkNhbmNlbEJveCAtLT4gU2VsZWN0RnJhbWVcbkNyZWF0ZUJveCAtLT4gTmFtZUh5cGVyTGlua1xuXG5Mb2FkVmlkZW8xIC0tPiBMb2FkVmlkZW8yXG5Mb2FkVmlkZW8yIC0tPiBTZWxlY3RMaW5rZWRGcmFtZVxuXG5cblNlbGVjdExpbmtlZEZyYW1lIC0tPiBOYW1lSHlwZXJMaW5rXG5OYW1lSHlwZXJMaW5rIC0tPiBMb2FkVmlkZW8xXG5cbk5hbWVIeXBlckxpbmsgLS0-IFNhdmVIeXBlckxpbmtzXG5cblxuXG5cblxuXG5TYXZlSHlwZXJMaW5rcyAtLT4gWypdXG4iLCJtZXJtYWlkIjoie1xuICBcInRoZW1lXCI6IFwiZGVmYXVsdFwiXG59IiwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)
@@ -92,7 +92,7 @@
   ```
   ### Video Player
 
-  > __`Tasks`__: Synchronize _Video source_ (.rgb files) and _Audio source_ (.wav files) manually with given frame rate.
+  > __`Description`__: Play video and synchronize _Video source_ (.rgb files) and _Audio source_ (.wav files) automatically for the given frame rate.
  
 
    #### How to run
