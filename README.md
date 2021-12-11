@@ -5,7 +5,7 @@
   ## Feature
   A **Low latency**, **synchronized**, **easy-to-use** tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
 
-[Authoring Tool Demo Video](https://youtu.be/yfJ6UC1cnnc)
+[Authoring Tool Demo Video](https://youtu.be/yfJ6UC1cnnc) 
 
   ## Project Architecture
   ### 1. Authoring Tool
@@ -58,7 +58,7 @@
   
   ```
   
-  
+
   
   <div align="center"><img src="http://liuyutsing.com/wp-content/uploads/2021/12/hashmap.png" width="1000", height="250"></div>
   
