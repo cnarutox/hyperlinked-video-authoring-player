@@ -1,13 +1,13 @@
   # HyperLinked Video Authoring Tool & Player
-  > **Hypervideo**, or **Hyperlinked video**. Hypervideo video is a displayed video stream that contains embedded, user-clickable anchors allowing navigation between video and other hypermedia elements. https://github.com/cnarutox/hyperlinked-video-authoring-player
+  > **Hypervideo**, or **Hyperlinked video**. Hypervideo video is a displayed video stream that contains embedded, user-clickable anchors allowing navigation between video and other hypermedia elements. [Look at GitHub](https://github.com/cnarutox/hyperlinked-video-authoring-player)
   
 
-  ## Feature
-  A **Low latency**, **synchronized**, **easy-to-use** tool integrating functions of both authoring hyperlinks for videos and playing hyperlinked videos.
+  ## ① Feature
+  A **Low latency**, **synchronized**, **easy-to-use** tool integrating functions of both authoring hyperlinks for videos (a directory containing a series of continuous `.rgb` image files and a `.wav` audio file with the same name) and playing hyperlinked videos.
 
-[Authoring Tool Demo Video](https://youtu.be/yfJ6UC1cnnc) 
+<p align="center"><a href="https://youtu.be/yfJ6UC1cnnc">Authoring Tool Demo Video</a></p>
 
-  ## Project Architecture
+  ## ② Architecture
   ### 1. Authoring Tool
 
   A authoring tool integrating `Import Video`, `Slide over Frame`, `Create Editable Link`, `Edit Bounding Box`, `Save HyperLink` to create hyperlinks from one file to another.
@@ -25,7 +25,7 @@
   java -cp bin Authoring
   ```
   - Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
-  - Make sure to click Save HyperLinked Video before chaning main video
+  - The **directory** should look like this: ![img](https://github.com/cnarutox/cnarutox/blob/main/img/directory.png?raw=true)
   
   #### Data Structure
   - `HashMap`: restore links of maping pair of _primary file_  to _list of Region of Interest (includes region shape, size and hyperlink)_.
@@ -67,10 +67,13 @@
   
   #### Meta file
   - `File path`: `.txt` file with `same base name` as the primary video saved within primary video files directory.
-  > _e.g._ The meta file for video _/usr/AIFilmOne/_ will be save at _/usr/AIFilmOne/AIFilmOne.txt._
+  
+  _e.g._ The meta file for video `/usr/AIFilmOne/` will be save at `/usr/AIFilmOne/AIFilmOne.txt`
+
   - `Content format`: The first line will refer to `primary file`, while the following lines will refer to `Regions of Interest` with hyperlink information respectively.
-  > _e.g._ Example of _/usr/AIFilmOne/AIFilmOne.txt._ is as below.
-  ```console
+ 
+  _e.g._ Example of `/usr/AIFilmOne/AIFilmOne.txt` is as below.
+  ```java
   /usr/AIFilmOne
   [region1start.shapeInfo, region1start.frame]?[region1end.shapeInfo, region1end.frame]?targetFile1?targetframe1
   [region2start.shapeInfo, region2start.frame]?[region2end.shapeInfo, region2end.frame]?targetFile2?targetframe2
@@ -90,7 +93,6 @@
   java -cp bin VideoPlayer
   ```
   - Make sure to import **directory** like `C:\CSCI576\Project\AIFilmTwo`
-  - Make sure to click Save HyperLinked Video before chaning main video
 
   #### Input Format
   - __``Video Format``__
@@ -171,7 +173,7 @@
       }
     }
     ```
-  ## Folder Structure
+  ## ③ Folder Structure
 
   The workspace contains two folders by default, where:
 
@@ -180,9 +182,10 @@
 
   Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
-  > If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there. https://github.com/cnarutox/hyperlinked-video-authoring-player
-
-  ## Dependency Management
+  > If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+  ## ④ Dependency Management
 
   The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
 
+---
+This project is for [CSCI 576: Multimedia Systems Design](https://classes.usc.edu/term-20211/course/csci-576/), finished by both Yuqing Liu and Xu Chen. Thanks for the professor and TAs!
